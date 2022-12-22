@@ -130,7 +130,7 @@ class X509Certificate
         } else {
             openssl_x509_export($res, $out, false);
             if (preg_match('/^\s+Signature Algorithm:\s*(.*)\s*$/m', $out, $match)) {
-                switch ($match[1]) {
+                switch (trim($match[1])) {
                     case 'sha1WithRSAEncryption':
                     case 'sha1WithRSA':
                         $this->signatureAlgorithm = XMLSecurityKey::RSA_SHA1;
@@ -151,7 +151,30 @@ class X509Certificate
                     case 'md5WithRSA':
                         $this->signatureAlgorithm = SamlConstants::XMLDSIG_DIGEST_MD5;
                         break;
+                    case 'rsassaPss':
+                        if (preg_match('/^\s+Mask Algorithm:\s*(.*)\s*$/m', $out, $match)) {
+                            switch (trim($match[1])) {
+                                case 'mgf1 with sha1':
+                                    $this->signatureAlgorithm = XMLSecurityKey::SHA1_RSA_MGF1;
+                                    break 2;
+                                case 'mgf1 with sha224':
+                                    $this->signatureAlgorithm = XMLSecurityKey::SHA224_RSA_MGF1;
+                                    break 2;
+                                case 'mgf1 with sha256':
+                                    $this->signatureAlgorithm = XMLSecurityKey::SHA256_RSA_MGF1;
+                                    break 2;
+                                case 'mgf1 with sha384':
+                                    $this->signatureAlgorithm = XMLSecurityKey::SHA384_RSA_MGF1;
+                                    break 2;
+                                case 'mgf1 with sha512':
+                                    $this->signatureAlgorithm = XMLSecurityKey::SHA512_RSA_MGF1;
+                                    break 2;
+                                default:
+                                    throw new LightSamlSecurityException('Unrecognized hash algorithm: ' . $match[1]);
+                            }
+                        }
                     default:
+                        throw new LightSamlSecurityException('Unrecognized signature algorithm: ' . $match[1]);
                 }
             }
         }

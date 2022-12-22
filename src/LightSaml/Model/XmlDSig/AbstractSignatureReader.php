@@ -88,12 +88,15 @@ abstract class AbstractSignatureReader extends Signature
     {
         $algorithm = $this->getAlgorithm();
 
-        if (
-            !in_array($algorithm, [
-            XMLSecurityKey::RSA_SHA1,
-            XMLSecurityKey::RSA_SHA256,
-            XMLSecurityKey::RSA_SHA384,
-            XMLSecurityKey::RSA_SHA512,
+        if (!in_array($algorithm, [
+                XMLSecurityKey::RSA_SHA1,
+                XMLSecurityKey::RSA_SHA256,
+                XMLSecurityKey::RSA_SHA384,
+                XMLSecurityKey::RSA_SHA512,
+                XMLSecurityKey::SHA1_RSA_MGF1,
+                XMLSecurityKey::SHA224_RSA_MGF1,
+                XMLSecurityKey::SHA256_RSA_MGF1,
+                XMLSecurityKey::SHA512_RSA_MGF1,
             ])
         ) {
             throw new LightSamlSecurityException(sprintf('Unsupported signing algorithm: "%s"', $algorithm));
