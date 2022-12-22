@@ -1,5 +1,5 @@
 {
-    "name": "litesaml/lightsaml",
+    "name": "brainscc/lightsaml",
     "license": "MIT",
     "type": "library",
     "description": "SAML 2.0 PHP library",
