@@ -18,7 +18,7 @@ Install with composer.
         }
     ],
     "require": {
-        "brainscc/lightsaml": "~3.0"
+        "brainscc/lightsaml": "~4.1.0"
     }
 }
 ```

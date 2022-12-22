@@ -31,12 +31,6 @@
             "LightSaml\\Tests\\": "tests/"
         }
     },
-    "repositories": [
-        {
-            "url": "https://github.com/brain-SCC/xmlseclibs.git",
-            "type": "git"
-        }
-    ],
     "require": {
         "php": ">=7.4",
         "brainscc/xmlseclibs": "~3.2.0",
