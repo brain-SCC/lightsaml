@@ -87,16 +87,7 @@ final class Helper
             throw new \InvalidArgumentException();
         }
 
-        if (function_exists('openssl_random_pseudo_bytes')) {
-            return openssl_random_pseudo_bytes($length);
-        }
-
-        $data = '';
-        for ($i = 0; $i < $length; ++$i) {
-            $data .= chr(mt_rand(0, 255));
-        }
-
-        return $data;
+        return random_bytes($length);
     }
 
     /**
@@ -106,13 +97,7 @@ final class Helper
      */
     public static function stringToHex($bytes)
     {
-        $result = '';
-        $len = strlen($bytes);
-        for ($i = 0; $i < $len; ++$i) {
-            $result .= sprintf('%02x', ord($bytes[$i]));
-        }
-
-        return $result;
+        return bin2hex($bytes);
     }
 
     /**
@@ -162,7 +147,7 @@ final class Helper
      */
     public static function validateWellFormedUriString($value)
     {
-        $value = trim($value);
+        $value = trim((string)$value);
         if ('' == $value || strlen($value) > 65520) {
             return false;
         }
