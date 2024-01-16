@@ -56,6 +56,11 @@ class AuthnRequest extends AbstractRequest
     protected $subject;
 
     /**
+     * @var Extensions|null
+     */
+    private $extensions;
+
+    /**
      * @param Subject|null $subject
      *
      * @return AuthnRequest
@@ -220,6 +225,26 @@ class AuthnRequest extends AbstractRequest
     }
 
     /**
+     * @param Extensions|null $extensions
+     *
+     * @return AuthnRequest
+     */
+    public function setExtensions($extensions)
+    {
+        $this->extensions = $extensions;
+
+        return $this;
+    }
+
+    /**
+     * @return Extensions|null
+     */
+    public function getExtensions()
+    {
+        return $this->extensions;
+    }
+
+    /**
      * @param int|null $attributeConsumingServiceIndex
      *
      * @return AuthnRequest
@@ -299,7 +324,7 @@ class AuthnRequest extends AbstractRequest
                 'AssertionConsumerServiceURL', 'AttributeConsumingServiceIndex', 'ProviderName',
             ], $result);
 
-        $this->singleElementsToXml(['Subject', 'NameIDPolicy', 'Conditions'], $result, $context);
+        $this->singleElementsToXml(['Subject', 'NameIDPolicy', 'Conditions', 'Extensions'], $result, $context);
 
         // must be last in order signature to include them all
         $this->singleElementsToXml(['Signature'], $result, $context);
@@ -320,6 +345,7 @@ class AuthnRequest extends AbstractRequest
             'Subject' => ['saml', 'LightSaml\Model\Assertion\Subject'],
             'NameIDPolicy' => ['samlp', 'LightSaml\Model\Protocol\NameIDPolicy'],
             'Conditions' => ['saml', 'LightSaml\Model\Assertion\Conditions'],
+            'Extensions' => ['samlp', 'LightSaml\Model\Protocol\Extensions'],
         ]);
     }
 }
