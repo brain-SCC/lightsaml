@@ -4,8 +4,9 @@ This is a fork of [litesaml/lightsaml](https://github.com/litesaml/lightsaml) an
 
 - RSASSA-PSS based XML signature algorithms (by using our fork of [xmlseclibs](https://github.com/brain-SCC/xmlseclibs))
 - SamlExtenions in AuthnRequest
+- RequestedAuthnContext in AuthnRequest
 
-We maintain a master branch, with the latest changes from [litesaml/lightsaml](https://github.com/litesaml/lightsaml) and our additions. We also maintain a legacy branch with our additions, which provides PHP 7.3 support.
+We maintain this repo, with the latest changes from [litesaml/lightsaml](https://github.com/litesaml/lightsaml) and our additions.
 
 ## Installation
 
@@ -20,7 +21,7 @@ Install with composer.
         }
     ],
     "require": {
-        "brainscc/lightsaml": "~4.2.0"
+        "brainscc/lightsaml": "~4.3.0"
     }
 }
 ```
