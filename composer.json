@@ -1,5 +1,5 @@
 {
-    "name": "litesaml/lightsaml",
+    "name": "brainscc/lightsaml",
     "license": "MIT",
     "type": "library",
     "description": "SAML 2.0 PHP library",
@@ -33,7 +33,7 @@
     },
     "require": {
         "php": ">=7.4",
-        "robrichards/xmlseclibs": "~2.0|~3.0|~4.0",
+        "brainscc/xmlseclibs": "~3.2.0",
         "symfony/http-foundation": "~5.0|~6.0|~7.0",
         "psr/event-dispatcher": "^1.0"
     },

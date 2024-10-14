@@ -1,23 +1,26 @@
-# About Light Saml
+# lightSAML
 
-[![Run tests](https://github.com/litesaml/lightsaml/actions/workflows/run_tests.yml/badge.svg)](https://github.com/litesaml/lightsaml/actions/workflows/run_tests.yml)
-[![Latest Stable Version](https://poser.pugx.org/litesaml/lightsaml/v/stable)](https://packagist.org/packages/litesaml/lightsaml)
+This is a fork of [litesaml/lightsaml](https://github.com/litesaml/lightsaml) and adds support for:
 
-Light Saml Implements basic SAML 2.0 data model classes, serialization/deserialization to/from xml with XML security and
-certificates support, and message encapsulations to bindings. Covered with unit tests.
+- RSASSA-PSS based XML signature algorithms (by using our fork of [xmlseclibs](https://github.com/brain-SCC/xmlseclibs))
+- SamlExtenions in AuthnRequest
+
+We maintain a master branch, with the latest changes from [litesaml/lightsaml](https://github.com/litesaml/lightsaml) and our additions. We also maintain a legacy branch with our additions, which provides PHP 7.3 support.
 
 ## Installation
 
-You can install it via composer:
+Install with composer.
 
-```bash
-composer require litesaml/lightsaml
+```json
+{
+    "repositories": [
+        {
+            "url": "https://github.com/brain-SCC/lightsaml.git",
+            "type": "git"
+        }
+    ],
+    "require": {
+        "brainscc/lightsaml": "~4.2.0"
+    }
+}
 ```
-
-## Documentation
-
-You can find our Cookbook in [this dedicated website](https://docs.litesaml.com).
-
-## Contributing
-
-Light Saml is an open source project under [MIT License](https://github.com/litesaml/lightsaml/blob/master/LICENSE.md) and is [open for contributions](https://github.com/litesaml/lightsaml/blob/master/CONTRIBUTING.md).
