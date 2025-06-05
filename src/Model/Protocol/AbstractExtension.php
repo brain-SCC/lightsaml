@@ -75,31 +75,21 @@ abstract class AbstractExtension extends SamlMessage
     {
         $result = $this->createElement($this->name, $this->namespace, $parent, $context);
 
-        foreach ($this->attributes as $name => $value)
-        {
-            if (is_bool($value))
-            {
+        foreach ($this->attributes as $name => $value) {
+            if (is_bool($value)) {
                 $result->setAttribute($name, $value ? 'true' : 'false');
-            }
-            else
-            {
+            } else {
                 $result->setAttribute($name, $value);
             }
         }
 
-        foreach ($this->elements as $item)
-        {
-            if ($item instanceof self)
-            {
+        foreach ($this->elements as $item) {
+            if ($item instanceof self) {
                 $item->serialize($result, $context);
-            }
-            elseif ($item instanceof CDataContext)
-            {
+            } elseif ($item instanceof CDataContext) {
                 $cdata = $result->ownerDocument->createCDATASection((string) $item);
                 $result->appendChild($cdata);
-            }
-            elseif (is_string($item))
-            {
+            } elseif (is_string($item)) {
                 $result->nodeValue = $item;
             }
         }
