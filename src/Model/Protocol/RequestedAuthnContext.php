@@ -4,7 +4,6 @@ namespace LightSaml\Model\Protocol;
 
 use DOMNode;
 use LightSaml\Model\AbstractSamlModel;
-use LightSaml\Model\Assertion\AuthnContext;
 use LightSaml\Model\Context\DeserializationContext;
 use LightSaml\Model\Context\SerializationContext;
 use LightSaml\SamlConstants;
