@@ -1,18 +1,18 @@
 <?php
 
-namespace LightSaml\Tests\Functional\Credential;
+namespace Tests\Functional\Credential;
 
 use LightSaml\Credential\KeyHelper;
 use LightSaml\Credential\X509Certificate;
 use LightSaml\Credential\X509Credential;
-use LightSaml\Tests\BaseTestCase;
+use Tests\BaseTestCase;
 
 class X509CredentialTest extends BaseTestCase
 {
     public function test_public_key()
     {
         $certificate = new X509Certificate();
-        $certificate->loadFromFile(__DIR__.'/../../resources/saml.crt');
+        $certificate->loadFromFile(__DIR__ . '/../../resources/saml.crt');
 
         $credential = new X509Credential($certificate);
 
@@ -22,15 +22,15 @@ class X509CredentialTest extends BaseTestCase
 
         $this->assertNull($credential->getPrivateKey());
 
-        $this->assertEquals(array('/C=RS/ST=Serbia/O=BOS/CN=mt.evo.team'), $credential->getKeyNames());
+        $this->assertEquals(['/C=RS/ST=Serbia/O=BOS/CN=mt.evo.team'], $credential->getKeyNames());
     }
 
     public function test_private_key()
     {
         $certificate = new X509Certificate();
-        $certificate->loadFromFile(__DIR__.'/../../resources/saml.crt');
+        $certificate->loadFromFile(__DIR__ . '/../../resources/saml.crt');
 
-        $privateKey = KeyHelper::createPrivateKey(__DIR__.'/../../resources/saml.pem', null, true);
+        $privateKey = KeyHelper::createPrivateKey(__DIR__ . '/../../resources/saml.pem', null, true);
 
         $credential = new X509Credential($certificate, $privateKey);
 

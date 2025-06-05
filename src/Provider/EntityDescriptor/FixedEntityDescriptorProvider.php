@@ -6,12 +6,8 @@ use LightSaml\Model\Metadata\EntityDescriptor;
 
 class FixedEntityDescriptorProvider implements EntityDescriptorProviderInterface
 {
-    /** @var EntityDescriptor */
-    protected $entityDescriptor;
-
-    public function __construct(EntityDescriptor $entityDescriptor)
+    public function __construct(protected EntityDescriptor $entityDescriptor)
     {
-        $this->entityDescriptor = $entityDescriptor;
     }
 
     /**

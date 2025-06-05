@@ -9,33 +9,29 @@ use LightSaml\Context\Profile\ProfileContext;
 abstract class LogHelper
 {
     /**
-     * @param array $extraData
      *
      * @return array
      */
-    public static function getActionContext(ContextInterface $context, ActionInterface $action, array $extraData = null)
+    public static function getActionContext(ContextInterface $context, ActionInterface $action, ?array $extraData = null)
     {
         return self::getContext($context, $action, $extraData, false);
     }
 
     /**
-     * @param array $extraData
      *
      * @return array
      */
-    public static function getActionErrorContext(ContextInterface $context, ActionInterface $action, array $extraData = null)
+    public static function getActionErrorContext(ContextInterface $context, ActionInterface $action, ?array $extraData = null)
     {
         return self::getContext($context, $action, $extraData, true);
     }
 
     /**
-     * @param ActionInterface $action
-     * @param array           $extraData
-     * @param bool            $logWholeContext
+     * @param bool $logWholeContext
      *
      * @return array
      */
-    private static function getContext(ContextInterface $context, ActionInterface $action = null, array $extraData = null, $logWholeContext = false)
+    private static function getContext(ContextInterface $context, ?ActionInterface $action = null, ?array $extraData = null, $logWholeContext = false)
     {
         $topContext = $context->getTopParent();
         $result = [];
@@ -43,8 +39,8 @@ abstract class LogHelper
             $result['profile_id'] = $topContext->getProfileId();
             $result['own_role'] = $topContext->getOwnRole();
         }
-        if ($action) {
-            $result['action'] = get_class($action);
+        if ($action instanceof ActionInterface) {
+            $result['action'] = $action::class;
         }
         $result['top_context_id'] = spl_object_hash($topContext);
 

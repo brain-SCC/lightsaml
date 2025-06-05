@@ -1,18 +1,21 @@
 <?php
 
-namespace LightSaml\Tests\Action\Profile\Inbound\Message;
+namespace Tests\Action\Profile\Inbound\Message;
 
 use LightSaml\Action\Profile\Inbound\Message\MessageSignatureValidatorAction;
 use LightSaml\Context\Profile\ProfileContext;
 use LightSaml\Credential\CredentialInterface;
 use LightSaml\Credential\Criteria\MetadataCriteria;
+use LightSaml\Error\LightSamlModelException;
 use LightSaml\Model\Assertion\Issuer;
 use LightSaml\Model\Protocol\AuthnRequest;
 use LightSaml\Model\XmlDSig\SignatureStringReader;
 use LightSaml\Model\XmlDSig\SignatureWriter;
 use LightSaml\Profile\Profiles;
-use LightSaml\Tests\BaseTestCase;
 use LightSaml\Validator\Model\Signature\SignatureValidatorInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\MockObject\MockObject;
+use Tests\BaseTestCase;
 
 class MessageSignatureValidatorActionTest extends BaseTestCase
 {
@@ -43,7 +46,7 @@ class MessageSignatureValidatorActionTest extends BaseTestCase
     public function test_throws_if_not_signature_reader()
     {
         $this->expectExceptionMessage("Expected AbstractSignatureReader");
-        $this->expectException(\LightSaml\Error\LightSamlModelException::class);
+        $this->expectException(LightSamlModelException::class);
         $action = new MessageSignatureValidatorAction(
             $logger = $this->getLoggerMock(),
             $signatureValidator = $this->getSignatureValidatorMock()
@@ -62,7 +65,7 @@ class MessageSignatureValidatorActionTest extends BaseTestCase
         $action->execute($context);
     }
 
-    public function success_on_validator_returns_credential_provider()
+    public static function success_on_validator_returns_credential_provider()
     {
         return [
             [ProfileContext::ROLE_IDP, MetadataCriteria::TYPE_SP],
@@ -70,9 +73,7 @@ class MessageSignatureValidatorActionTest extends BaseTestCase
         ];
     }
 
-    /**
-     * @dataProvider success_on_validator_returns_credential_provider
-     */
+    #[DataProvider('success_on_validator_returns_credential_provider')]
     public function test_success_on_validator_returns_credential($ownRole, $metadataType)
     {
         $action = new MessageSignatureValidatorAction(
@@ -136,7 +137,7 @@ class MessageSignatureValidatorActionTest extends BaseTestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|\LightSaml\Validator\Model\Signature\SignatureValidatorInterface
+     * @return MockObject|SignatureValidatorInterface
      */
     private function getSignatureValidatorMock()
     {
@@ -144,7 +145,7 @@ class MessageSignatureValidatorActionTest extends BaseTestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|\LightSaml\Credential\CredentialInterface
+     * @return MockObject|CredentialInterface
      */
     private function getCredentialMock()
     {

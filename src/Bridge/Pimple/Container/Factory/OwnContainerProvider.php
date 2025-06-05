@@ -9,20 +9,19 @@ use LightSaml\Provider\EntityDescriptor\EntityDescriptorProviderInterface;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
+/**
+ * @deprecated 5.0.0 No longer used by internal code and not recommended
+ */
 class OwnContainerProvider implements ServiceProviderInterface
 {
     /** @var CredentialInterface[] */
     private $ownCredentials = [];
 
-    /** @var EntityDescriptorProviderInterface */
-    private $ownEntityDescriptorProvider;
-
     /**
      * @param CredentialInterface[] $ownCredentials
      */
-    public function __construct(EntityDescriptorProviderInterface $ownEntityDescriptorProvider, array $ownCredentials = null)
+    public function __construct(private readonly EntityDescriptorProviderInterface $ownEntityDescriptorProvider, ?array $ownCredentials = null)
     {
-        $this->ownEntityDescriptorProvider = $ownEntityDescriptorProvider;
         if ($ownCredentials) {
             foreach ($ownCredentials as $credential) {
                 $this->addOwnCredential($credential);

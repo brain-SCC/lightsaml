@@ -1,25 +1,26 @@
 <?php
 
-namespace LightSaml\Tests\Functional\Model\Metadata;
+namespace Tests\Functional\Model\Metadata;
 
+use LightSaml\Error\LightSamlXmlException;
 use LightSaml\Model\Context\DeserializationContext;
 use LightSaml\Model\Metadata\ContactPerson;
 use LightSaml\Model\Metadata\EntitiesDescriptor;
 use LightSaml\SamlConstants;
-use LightSaml\Tests\BaseTestCase;
-use LightSaml\Tests\Helper\ContactPersonChecker;
-use LightSaml\Tests\Helper\EndpointChecker;
-use LightSaml\Tests\Helper\IndexedEndpointChecker;
-use LightSaml\Tests\Helper\KeyDescriptorChecker;
-use LightSaml\Tests\Helper\NameIdFormatChecker;
-use LightSaml\Tests\Helper\OrganizationChecker;
+use Tests\BaseTestCase;
+use Tests\Helper\ContactPersonChecker;
+use Tests\Helper\EndpointChecker;
+use Tests\Helper\IndexedEndpointChecker;
+use Tests\Helper\KeyDescriptorChecker;
+use Tests\Helper\NameIdFormatChecker;
+use Tests\Helper\OrganizationChecker;
 
 class EntitiesDescriptorFunctionalTest extends BaseTestCase
 {
     public function test__deserialize_test_shib()
     {
         $context = new DeserializationContext();
-        $context->getDocument()->load(__DIR__.'/../../../resources/testshib-providers.xml');
+        $context->getDocument()->load(__DIR__ . '/../../../resources/testshib-providers.xml');
 
         $entitiesDescriptor = new EntitiesDescriptor();
         $entitiesDescriptor->deserialize($context->getDocument(), $context);
@@ -43,10 +44,7 @@ class EntitiesDescriptorFunctionalTest extends BaseTestCase
         $this->assertCount(1, $idp->getAllKeyDescriptors());
         KeyDescriptorChecker::checkCertificateCN($this, null, 'idp.testshib.org', $idp->getFirstKeyDescriptor());
 
-        NameIdFormatChecker::check($this, $idp, array(
-            SamlConstants::NAME_ID_FORMAT_TRANSIENT,
-            SamlConstants::NAME_ID_FORMAT_SHIB_NAME_ID,
-        ));
+        NameIdFormatChecker::check($this, $idp, [SamlConstants::NAME_ID_FORMAT_TRANSIENT, SamlConstants::NAME_ID_FORMAT_SHIB_NAME_ID]);
 
         $this->assertCount(4, $idp->getAllSingleSignOnServices());
         EndpointChecker::check(
@@ -145,10 +143,7 @@ class EntitiesDescriptorFunctionalTest extends BaseTestCase
             $sp->getFirstSingleLogoutService(SamlConstants::BINDING_SAML2_HTTP_ARTIFACT)
         );
 
-        NameIdFormatChecker::check($this, $sp, array(
-            SamlConstants::NAME_ID_FORMAT_TRANSIENT,
-            SamlConstants::NAME_ID_FORMAT_SHIB_NAME_ID,
-        ));
+        NameIdFormatChecker::check($this, $sp, [SamlConstants::NAME_ID_FORMAT_TRANSIENT, SamlConstants::NAME_ID_FORMAT_SHIB_NAME_ID]);
 
         $this->assertCount(8, $sp->getAllAssertionConsumerServices());
         IndexedEndpointChecker::check(
@@ -213,7 +208,7 @@ class EntitiesDescriptorFunctionalTest extends BaseTestCase
     public function test_deserialize_ukfederation_metadata()
     {
         $context = new DeserializationContext();
-        $context->getDocument()->load(__DIR__.'/../../../resources/ukfederation-metadata.xml');
+        $context->getDocument()->load(__DIR__ . '/../../../resources/ukfederation-metadata.xml');
 
         $entitiesDescriptor = new EntitiesDescriptor();
         $entitiesDescriptor->deserialize($context->getDocument(), $context);
@@ -223,7 +218,7 @@ class EntitiesDescriptorFunctionalTest extends BaseTestCase
     public function test_throws_on_entity_descriptor()
     {
         $this->expectExceptionMessage("Expected 'EntitiesDescriptor' xml node and 'urn:oasis:names:tc:SAML:2.0:metadata' namespace but got node 'EntityDescriptor' and namespace 'urn:oasis:names:tc:SAML:2.0:metadata'");
-        $this->expectException(\LightSaml\Error\LightSamlXmlException::class);
-        EntitiesDescriptor::load(__DIR__.'/../../../resources/idp-ed.xml');
+        $this->expectException(LightSamlXmlException::class);
+        EntitiesDescriptor::load(__DIR__ . '/../../../resources/idp-ed.xml');
     }
 }

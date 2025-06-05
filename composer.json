@@ -7,19 +7,14 @@
     "authors": [
         {
             "name": "William",
-            "email": "work@suppo.fr"
-        },
-        {
-            "name": "Milos Tomic",
-            "email": "tmilos@gmail.com",
-            "homepage": "https://github.com/tmilos/",
-            "role": "Developer"
+            "email": "work@suppo.fr",
+            "homepage": "https://github.com/william-suppo"
         }
     ],
     "support": {
         "issues": "https://github.com/litesaml/lightsaml/issues",
         "source": "https://github.com/litesaml/lightsaml",
-        "docs": "https://docs.litesaml.com"
+        "docs": "https://litesaml.github.io/cookbook/"
     },
     "autoload": {
         "psr-4": {
@@ -28,32 +23,30 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "LightSaml\\Tests\\": "tests/"
+            "Tests\\": "tests/"
         }
     },
     "require": {
-        "php": ">=7.4",
+        "php": "^8.1",
         "brainscc/xmlseclibs": "~3.2.0",
-        "symfony/http-foundation": "~5.0|~6.0|~7.0",
-        "psr/event-dispatcher": "^1.0"
+        "symfony/http-foundation": "^6.0|^7.0",
+        "psr/event-dispatcher": "^1.0",
+        "litesaml/schemas": "^3.0",
+        "psr/log": "^3.0"
     },
     "require-dev": {
-        "symfony/dom-crawler": "~5.0|~6.0|~7.0",
-        "symfony/css-selector": "~5.0|~6.0|~7.0",
         "pimple/pimple": "~3.0",
-        "phpunit/phpunit": "~8.4|~9.5",
-        "monolog/monolog": "^2.0|^3.0",
-        "squizlabs/php_codesniffer": "^3.6",
-        "litesaml/schemas": "~1.0.0",
+        "phpunit/phpunit": "^10.1",
+        "mockery/mockery": "^1.4.4",
+        "rector/rector": "^1.2.2",
         "phpstan/phpstan": "^1.8",
-        "marcocesarato/php-conventional-changelog": "^1.15"
+        "php-cs-fixer/shim": "^3.70"
     },
     "prefer-stable": true,
     "minimum-stability": "stable",
     "scripts": {
         "test": "vendor/bin/phpunit",
-        "phpcs": "vendor/bin/phpcs --standard=PSR12 --exclude=Generic.Files.LineLength ./src",
-        "phpstan": "vendor/bin/phpstan analyse --memory-limit 512M --ansi",
-        "tag": "vendor/bin/conventional-changelog --commit"
+        "phpcs": "vendor/bin/php-cs-fixer --config=phpcs.php check . -vvv",
+        "phpstan": "vendor/bin/phpstan analyse --memory-limit 512M --ansi"
     }
 }

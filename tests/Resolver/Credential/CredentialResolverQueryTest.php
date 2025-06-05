@@ -1,19 +1,19 @@
 <?php
 
-namespace LightSaml\Tests\Resolver\Credential;
+namespace Tests\Resolver\Credential;
 
 use LightSaml\Credential\CredentialInterface;
 use LightSaml\Criteria\CriteriaSet;
 use LightSaml\Resolver\Credential\CredentialResolverInterface;
 use LightSaml\Resolver\Credential\CredentialResolverQuery;
-use LightSaml\Tests\BaseTestCase;
-use RobRichards\XMLSecLibs\XMLSecurityKey;
+use ReflectionClass;
+use Tests\BaseTestCase;
 
 class CredentialResolverQueryTest extends BaseTestCase
 {
     public function test__extends_criteria_set()
     {
-        $reflectionClass = new \ReflectionClass(CredentialResolverQuery::class);
+        $reflectionClass = new ReflectionClass(CredentialResolverQuery::class);
         $this->assertEquals(CriteriaSet::class, $reflectionClass->getParentClass()->name);
     }
 

@@ -13,14 +13,9 @@ use Psr\Log\LoggerInterface;
 
 class FlushRequestStatesAction extends AbstractProfileAction
 {
-    /** @var RequestStateStoreInterface */
-    protected $requestStore;
-
-    public function __construct(LoggerInterface $logger, RequestStateStoreInterface $requestStore)
+    public function __construct(LoggerInterface $logger, protected RequestStateStoreInterface $requestStore)
     {
         parent::__construct($logger);
-
-        $this->requestStore = $requestStore;
     }
 
     /**
@@ -42,9 +37,9 @@ class FlushRequestStatesAction extends AbstractProfileAction
     protected function flush($requestStateContext = null)
     {
         if (
-            $requestStateContext instanceof RequestStateContext &&
-            $requestStateContext->getRequestState() &&
-            $requestStateContext->getRequestState()->getId()
+            $requestStateContext instanceof RequestStateContext
+            && $requestStateContext->getRequestState()
+            && $requestStateContext->getRequestState()->getId()
         ) {
             $existed = $this->requestStore->remove($requestStateContext->getRequestState()->getId());
 

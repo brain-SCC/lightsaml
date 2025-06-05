@@ -2,6 +2,7 @@
 
 namespace LightSaml\Model\Assertion;
 
+use DOMNode;
 use LightSaml\Model\Context\DeserializationContext;
 use LightSaml\Model\Context\SerializationContext;
 use LightSaml\SamlConstants;
@@ -9,23 +10,11 @@ use LightSaml\SamlConstants;
 class ProxyRestriction extends AbstractCondition
 {
     /**
-     * @var int|null
-     */
-    protected $count;
-
-    /**
-     * @var string[]|null
-     */
-    protected $audience;
-
-    /**
      * @param int      $count
      * @param string[] $audience
      */
-    public function __construct($count = null, array $audience = null)
+    public function __construct(protected $count = null, protected ?array $audience = null)
     {
-        $this->count = $count;
-        $this->audience = $audience;
     }
 
     /**
@@ -74,7 +63,7 @@ class ProxyRestriction extends AbstractCondition
     /**
      * @return void
      */
-    public function serialize(\DOMNode $parent, SerializationContext $context)
+    public function serialize(DOMNode $parent, SerializationContext $context)
     {
         $result = $this->createElement('ProxyRestriction', SamlConstants::NS_ASSERTION, $parent, $context);
 
@@ -83,7 +72,7 @@ class ProxyRestriction extends AbstractCondition
         $this->manyElementsToXml($this->getAllAudience(), $result, $context, 'Audience');
     }
 
-    public function deserialize(\DOMNode $node, DeserializationContext $context)
+    public function deserialize(DOMNode $node, DeserializationContext $context)
     {
         $this->checkXmlNodeName($node, 'ProxyRestriction', SamlConstants::NS_ASSERTION);
 

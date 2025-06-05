@@ -1,6 +1,6 @@
 <?php
 
-namespace LightSaml\Tests\Action\Profile\Outbound\Message;
+namespace Tests\Action\Profile\Outbound\Message;
 
 use LightSaml\Action\Profile\Outbound\Message\SignMessageAction;
 use LightSaml\Meta\TrustOptions\TrustOptions;
@@ -8,7 +8,9 @@ use LightSaml\Model\Protocol\AuthnRequest;
 use LightSaml\Model\Protocol\Response;
 use LightSaml\Model\Protocol\SamlMessage;
 use LightSaml\Model\XmlDSig\SignatureWriter;
-use LightSaml\Tests\BaseTestCase;
+use LogicException;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Tests\BaseTestCase;
 
 class SignMessageActionTest extends BaseTestCase
 {
@@ -18,7 +20,7 @@ class SignMessageActionTest extends BaseTestCase
         $this->assertTrue(true);
     }
 
-    public function supports_message_provider()
+    public static function supports_message_provider()
     {
         return [
             ['setSignAuthnRequest', new AuthnRequest()],
@@ -26,9 +28,7 @@ class SignMessageActionTest extends BaseTestCase
         ];
     }
 
-    /**
-     * @dataProvider supports_message_provider
-     */
+    #[DataProvider('supports_message_provider')]
     public function test_supports_message($trustOptionsMethod, SamlMessage $message)
     {
         $action = new SignMessageAction($this->getLoggerMock(), $this->getSignatureResolverMock());
@@ -50,15 +50,11 @@ class SignMessageActionTest extends BaseTestCase
         ];
     }
 
-    /**
-     * @dataProvider does_not_support_message_provider
-     *
-     *
-     */
+    #[DataProvider('does_not_support_message_provider')]
     public function test_does_not_support_message(SamlMessage $message)
     {
         $this->expectExceptionMessage("Unexpected message type");
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $action = new SignMessageAction($this->getLoggerMock(), $this->getSignatureResolverMock());
 
         $context = $this->getProfileContext();
@@ -124,7 +120,7 @@ class SignMessageActionTest extends BaseTestCase
         $signature = new SignatureWriter($certificateMock = $this->getX509CertificateMock());
         $certificateMock->expects($this->any())
             ->method('getInfo')
-            ->willReturn($expectedInfo = ['a'=>1]);
+            ->willReturn($expectedInfo = ['a' => 1]);
         $certificateMock->expects($this->any())
             ->method('getFingerprint')
             ->willReturn($expectedFingerprint = '123123123');

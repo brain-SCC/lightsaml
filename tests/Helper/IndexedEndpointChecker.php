@@ -1,13 +1,13 @@
 <?php
 
-namespace LightSaml\Tests\Helper;
+namespace Tests\Helper;
 
 use LightSaml\Model\Metadata\IndexedEndpoint;
-use LightSaml\Tests\BaseTestCase;
+use Tests\BaseTestCase;
 
 class IndexedEndpointChecker
 {
-    public static function check(BaseTestCase $test, $binding, $location, $index, $isDefault, IndexedEndpoint $svc = null)
+    public static function check(BaseTestCase $test, $binding, $location, $index, $isDefault, ?IndexedEndpoint $svc = null)
     {
         EndpointChecker::check($test, $binding, $location, $svc);
         $test->assertEquals($index, $svc->getIndex());

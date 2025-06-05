@@ -1,6 +1,6 @@
 <?php
 
-namespace LightSaml\Tests\Resolver\Signature;
+namespace Tests\Resolver\Signature;
 
 use LightSaml\Context\Profile\ProfileContext;
 use LightSaml\Credential\CredentialInterface;
@@ -11,13 +11,16 @@ use LightSaml\Credential\Criteria\X509CredentialCriteria;
 use LightSaml\Credential\UsageType;
 use LightSaml\Credential\X509Certificate;
 use LightSaml\Criteria\CriteriaSet;
+use LightSaml\Error\LightSamlContextException;
 use LightSaml\Meta\TrustOptions\TrustOptions;
 use LightSaml\Model\Metadata\EntityDescriptor;
 use LightSaml\Profile\Profiles;
 use LightSaml\Resolver\Credential\CredentialResolverQuery;
 use LightSaml\Resolver\Signature\OwnSignatureResolver;
-use LightSaml\Tests\BaseTestCase;
+use LogicException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use RobRichards\XMLSecLibs\XMLSecurityKey;
+use Tests\BaseTestCase;
 
 class OwnSignatureResolverTest extends BaseTestCase
 {
@@ -30,7 +33,7 @@ class OwnSignatureResolverTest extends BaseTestCase
     public function test_throws_context_exception_when_no_credential_resolved()
     {
         $this->expectExceptionMessage("Unable to find signing credential");
-        $this->expectException(\LightSaml\Error\LightSamlContextException::class);
+        $this->expectException(LightSamlContextException::class);
         $signatureResolver = new OwnSignatureResolver($credentialResolverMock = $this->getCredentialResolverMock());
 
         $context = $this->getProfileContext();
@@ -69,7 +72,7 @@ class OwnSignatureResolverTest extends BaseTestCase
         $this->assertSame($privateKey, $signatureWriter->getXmlSecurityKey());
     }
 
-    public function _provider()
+    public static function _provider()
     {
         return [
             [ProfileContext::ROLE_IDP, MetadataCriteria::TYPE_IDP],
@@ -77,9 +80,7 @@ class OwnSignatureResolverTest extends BaseTestCase
         ];
     }
 
-    /**
-     * @dataProvider _provider
-     */
+    #[DataProvider('_provider')]
     public function test_credential_criterias($profileRole, $expectedMetadataType)
     {
         $signatureResolver = new OwnSignatureResolver($credentialResolverMock = $this->getCredentialResolverMock());
@@ -105,7 +106,7 @@ class OwnSignatureResolverTest extends BaseTestCase
     public function test_throws_logic_exception_when_returned_value_if_not_credential()
     {
         $this->expectExceptionMessage("Expected X509CredentialInterface but got");
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $signatureResolver = new OwnSignatureResolver($credentialResolverMock = $this->getCredentialResolverMock());
 
         $context = $this->getProfileContext();

@@ -2,6 +2,7 @@
 
 namespace LightSaml\Credential;
 
+use InvalidArgumentException;
 use LightSaml\Error\LightSamlException;
 use LightSaml\Error\LightSamlSecurityException;
 use LightSaml\SamlConstants;
@@ -64,13 +65,13 @@ class X509Certificate
      *
      * @return X509Certificate
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function loadPem($data)
     {
         $pattern = '/^-----BEGIN CERTIFICATE-----([^-]*)^-----END CERTIFICATE-----/m';
         if (false == preg_match($pattern, $data, $matches)) {
-            throw new \InvalidArgumentException('Invalid PEM encoded certificate');
+            throw new InvalidArgumentException('Invalid PEM encoded certificate');
         }
         $this->data = preg_replace('/\s+/', '', $matches[1]);
         $this->parse();
@@ -83,12 +84,12 @@ class X509Certificate
      *
      * @return X509Certificate
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function loadFromFile($filename)
     {
         if (!is_file($filename)) {
-            throw new \InvalidArgumentException(sprintf("File not found '%s'", $filename));
+            throw new InvalidArgumentException(sprintf("File not found '%s'", $filename));
         }
         $content = file_get_contents($filename);
         $this->loadPem($content);
@@ -101,9 +102,7 @@ class X509Certificate
      */
     public function toPem()
     {
-        $result = "-----BEGIN CERTIFICATE-----\n" . chunk_split($this->getData(), 64, "\n") . "-----END CERTIFICATE-----\n";
-
-        return $result;
+        return "-----BEGIN CERTIFICATE-----\n" . chunk_split($this->getData(), 64, "\n") . "-----END CERTIFICATE-----\n";
     }
 
     public function parse()
@@ -115,7 +114,7 @@ class X509Certificate
         $res = openssl_x509_read($this->toPem());
         $this->info = openssl_x509_parse($res);
         $this->signatureAlgorithm = null;
-        $signatureType = isset($this->info['signatureTypeSN']) ? $this->info['signatureTypeSN'] : '';
+        $signatureType = $this->info['signatureTypeSN'] ?? '';
         if ($signatureType && isset(self::$typeMap[$signatureType])) {
             $this->signatureAlgorithm = self::$typeMap[$signatureType];
         } else {
@@ -178,7 +177,7 @@ class X509Certificate
     /**
      * @return string
      *
-     * @throws \LightSaml\Error\LightSamlException
+     * @throws LightSamlException
      */
     public function getName()
     {
@@ -192,7 +191,7 @@ class X509Certificate
     /**
      * @return string
      *
-     * @throws \LightSaml\Error\LightSamlException
+     * @throws LightSamlException
      */
     public function getSubject()
     {
@@ -206,7 +205,7 @@ class X509Certificate
     /**
      * @return array
      *
-     * @throws \LightSaml\Error\LightSamlException
+     * @throws LightSamlException
      */
     public function getIssuer()
     {
@@ -220,7 +219,7 @@ class X509Certificate
     /**
      * @return int
      *
-     * @throws \LightSaml\Error\LightSamlException
+     * @throws LightSamlException
      */
     public function getValidFromTimestamp()
     {
@@ -234,7 +233,7 @@ class X509Certificate
     /**
      * @return int
      *
-     * @throws \LightSaml\Error\LightSamlException
+     * @throws LightSamlException
      */
     public function getValidToTimestamp()
     {
@@ -248,7 +247,7 @@ class X509Certificate
     /**
      * @return array
      *
-     * @throws \LightSaml\Error\LightSamlException
+     * @throws LightSamlException
      */
     public function getInfo()
     {
@@ -260,7 +259,7 @@ class X509Certificate
     }
 
     /**
-     * @throws \LightSaml\Error\LightSamlException
+     * @throws LightSamlException
      *
      * @return string
      */

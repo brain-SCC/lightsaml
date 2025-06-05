@@ -1,7 +1,8 @@
 <?php
 
-namespace LightSaml\Tests\Model\Xsd;
+namespace Tests\Model\Xsd;
 
+use DateTime;
 use LightSaml\Helper;
 use LightSaml\Model\Assertion\Issuer;
 use LightSaml\Model\Protocol\LogoutResponse;
@@ -9,7 +10,7 @@ use LightSaml\Model\Protocol\Status;
 use LightSaml\Model\Protocol\StatusCode;
 use LightSaml\SamlConstants;
 
-class LogoutResponseXsdTest extends AbstractXsdValidationTest
+class LogoutResponseXsdTest extends AbstractXsdValidation
 {
     public function test_logout_response_with_xsd()
     {
@@ -18,7 +19,7 @@ class LogoutResponseXsdTest extends AbstractXsdValidationTest
             ->setInResponseTo(Helper::generateID())
             ->setStatus(new Status(new StatusCode(SamlConstants::STATUS_SUCCESS), 'Successfully logged out from service'))
             ->setID(Helper::generateID())
-            ->setIssueInstant(new \DateTime())
+            ->setIssueInstant(new DateTime())
             ->setDestination('https://destination.com')
             ->setIssuer(new Issuer('https://issuer.com'))
         ;

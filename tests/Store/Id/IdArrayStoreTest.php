@@ -1,18 +1,19 @@
 <?php
 
-namespace LightSaml\Tests\Store\Id;
+namespace Tests\Store\Id;
 
+use DateTime;
 use LightSaml\Store\Id\IdArrayStore;
-use LightSaml\Tests\BaseTestCase;
+use Tests\BaseTestCase;
 
 class IdArrayStoreTest extends BaseTestCase
 {
     public function test_works()
     {
         $store = new IdArrayStore();
-        $store->set('aaa', '111', new \DateTime('+1 day'));
-        $store->set('aaa', '222', new \DateTime('+1 day'));
-        $store->set('bbb', '333', new \DateTime('+1 day'));
+        $store->set('aaa', '111', new DateTime('+1 day'));
+        $store->set('aaa', '222', new DateTime('+1 day'));
+        $store->set('bbb', '333', new DateTime('+1 day'));
 
         $this->assertTrue($store->has('aaa', '111'));
         $this->assertTrue($store->has('aaa', '222'));

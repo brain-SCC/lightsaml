@@ -1,22 +1,24 @@
 <?php
 
-namespace LightSaml\Tests\Binding;
+namespace Tests\Binding;
 
+use DOMDocument;
+use DOMXPath;
 use LightSaml\Binding\BindingFactory;
 use LightSaml\Binding\HttpPostBinding;
 use LightSaml\Context\Profile\MessageContext;
+use LightSaml\Error\LightSamlBindingException;
 use LightSaml\Model\Protocol\Response;
 use LightSaml\SamlConstants;
-use LightSaml\Tests\BaseTestCase;
-use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
+use Tests\BaseTestCase;
 
 class HttpPostBindingTest extends BaseTestCase
 {
     public function test_receive_throws_when_no_message()
     {
         $this->expectExceptionMessage("Missing SAMLRequest or SAMLResponse parameter");
-        $this->expectException(\LightSaml\Error\LightSamlBindingException::class);
+        $this->expectException(LightSamlBindingException::class);
         $request = new Request();
 
         $binding = new HttpPostBinding();
@@ -45,10 +47,13 @@ class HttpPostBindingTest extends BaseTestCase
 
         $html = $httpResponse->getContent();
 
-        $crawler = new Crawler($html);
-        $relayStateInputs = $crawler->filter('body form input[name="RelayState"]');
-        $this->assertEquals(1, $relayStateInputs->count());
-        $actualRelayState = $relayStateInputs->first()->attr('value');
+        $dom = new DOMDocument();
+        $dom->loadHTML($html);
+        $xpath = new DOMXPath($dom);
+        $relayStateInput = $xpath->query('//input[@name="RelayState"]');
+
+        $this->assertEquals(1, $relayStateInput->count());
+        $actualRelayState = $relayStateInput->item(0)->getAttribute('value');
         $this->assertEquals($expectedRelayState, $actualRelayState);
     }
 }

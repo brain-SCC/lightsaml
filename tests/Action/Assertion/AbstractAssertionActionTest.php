@@ -1,11 +1,13 @@
 <?php
 
-namespace LightSaml\Tests\Action\Assertion;
+namespace Tests\Action\Assertion;
 
 use LightSaml\Action\Assertion\AbstractAssertionAction;
 use LightSaml\Context\ContextInterface;
 use LightSaml\Context\Profile\AssertionContext;
-use LightSaml\Tests\BaseTestCase;
+use LightSaml\Error\LightSamlContextException;
+use PHPUnit\Framework\MockObject\MockObject;
+use Tests\BaseTestCase;
 
 class AbstractAssertionActionTest extends BaseTestCase
 {
@@ -31,15 +33,13 @@ class AbstractAssertionActionTest extends BaseTestCase
     public function test_throws_context_exception_for_non_assertion_context()
     {
         $action = $this->getAbstractAssertionActionMock([$this->getLoggerMock()]);
-        $this->expectException(\LightSaml\Error\LightSamlContextException::class);
+        $this->expectException(LightSamlContextException::class);
         $this->expectExceptionMessage("Expected AssertionContext");
         $action->execute($this->getMockBuilder(ContextInterface::class)->getMock());
     }
 
     /**
-     * @param array $arguments
-     *
-     * @return \PHPUnit_Framework_MockObject_MockObject|AbstractAssertionAction
+     * @return MockObject|AbstractAssertionAction
      */
     private function getAbstractAssertionActionMock(array $arguments)
     {

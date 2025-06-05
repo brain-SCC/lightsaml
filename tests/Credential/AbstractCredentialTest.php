@@ -1,9 +1,11 @@
 <?php
 
-namespace LightSaml\Tests\Credential;
+namespace Tests\Credential;
 
+use LightSaml\Credential\AbstractCredential;
 use LightSaml\Credential\UsageType;
-use LightSaml\Tests\BaseTestCase;
+use PHPUnit\Framework\MockObject\MockObject;
+use Tests\BaseTestCase;
 
 class AbstractCredentialTest extends BaseTestCase
 {
@@ -42,20 +44,20 @@ class AbstractCredentialTest extends BaseTestCase
     {
         $credential = $this->getAbstractCredentialMock();
 
-        $this->assertEquals(array(), $credential->getKeyNames());
+        $this->assertEquals([], $credential->getKeyNames());
 
         $credential->addKeyName($keyName1 = 'foo');
-        $this->assertEquals(array($keyName1), $credential->getKeyNames());
+        $this->assertEquals([$keyName1], $credential->getKeyNames());
 
         $credential->addKeyName($keyName2 = 'bar');
-        $this->assertEquals(array($keyName1, $keyName2), $credential->getKeyNames());
+        $this->assertEquals([$keyName1, $keyName2], $credential->getKeyNames());
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|\LightSaml\Credential\AbstractCredential
+     * @return MockObject|AbstractCredential
      */
     private function getAbstractCredentialMock()
     {
-        return $this->getMockForAbstractClass('LightSaml\Credential\AbstractCredential');
+        return $this->getMockForAbstractClass(AbstractCredential::class);
     }
 }

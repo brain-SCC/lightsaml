@@ -2,6 +2,7 @@
 
 namespace LightSaml\Binding;
 
+use Exception;
 use LightSaml\Context\Profile\Helper\MessageContextHelper;
 use LightSaml\Context\Profile\MessageContext;
 use LightSaml\Error\LightSamlBindingException;
@@ -13,17 +14,18 @@ use LightSaml\SamlConstants;
 use RobRichards\XMLSecLibs\XMLSecurityKey;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class HttpRedirectBinding extends AbstractBinding
 {
     /**
      * @param string|null $destination
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function send(MessageContext $context, $destination = null)
     {
-        $destination = $context->getMessage()->getDestination() ? $context->getMessage()->getDestination() : $destination;
+        $destination = $context->getMessage()->getDestination() ?: $destination;
 
         $url = $this->getRedirectURL($context, $destination);
 
@@ -38,7 +40,7 @@ class HttpRedirectBinding extends AbstractBinding
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     protected function processData(array $data, MessageContext $context)
     {
@@ -89,20 +91,17 @@ class HttpRedirectBinding extends AbstractBinding
      * @param string $msg
      * @param string $encoding
      *
-     * @throws \LightSaml\Error\LightSamlBindingException
+     * @throws LightSamlBindingException
      *
      * @return string
      */
     protected function decodeMessageString($msg, $encoding)
     {
-        $msg = base64_decode($msg);
-        switch ($encoding) {
-            case SamlConstants::ENCODING_DEFLATE:
-                return gzinflate($msg);
-                break;
-            default:
-                throw new LightSamlBindingException(sprintf("Unknown encoding '%s'", $encoding));
-        }
+        $msg = base64_decode($msg, true);
+        return match ($encoding) {
+            SamlConstants::ENCODING_DEFLATE => gzinflate($msg),
+            default => throw new LightSamlBindingException(sprintf("Unknown encoding '%s'", $encoding)),
+        };
     }
 
     protected function loadRelayState(SamlMessage $message, array $data)
@@ -145,10 +144,7 @@ class HttpRedirectBinding extends AbstractBinding
         return $this->getDestinationUrl($msg, $message, $destination);
     }
 
-    /**
-     * @return string
-     */
-    protected function getMessageEncodedXml(SamlMessage $message, MessageContext $context)
+    protected function getMessageEncodedXml(SamlMessage $message, MessageContext $context): string
     {
         $message->setSignature(null);
 
@@ -159,9 +155,8 @@ class HttpRedirectBinding extends AbstractBinding
         $this->dispatchSend($xml);
 
         $xml = gzdeflate($xml);
-        $xml = base64_encode($xml);
 
-        return $xml;
+        return base64_encode($xml);
     }
 
     /**
@@ -171,14 +166,8 @@ class HttpRedirectBinding extends AbstractBinding
      */
     protected function addMessageToUrl(SamlMessage $message, $xml)
     {
-        if ($message instanceof AbstractRequest) {
-            $msg = 'SAMLRequest=';
-        } else {
-            $msg = 'SAMLResponse=';
-        }
-        $msg .= urlencode($xml);
-
-        return $msg;
+        $msg = $message instanceof AbstractRequest ? 'SAMLRequest=' : 'SAMLResponse=';
+        return $msg . urlencode($xml);
     }
 
     /**
@@ -194,10 +183,10 @@ class HttpRedirectBinding extends AbstractBinding
     /**
      * @param string $msg
      */
-    protected function addSignatureToUrl(&$msg, SignatureWriter $signature = null)
+    protected function addSignatureToUrl(&$msg, ?SignatureWriter $signature = null)
     {
         /** @var $key XMLSecurityKey */
-        $key = $signature ? $signature->getXmlSecurityKey() : null;
+        $key = $signature instanceof SignatureWriter ? $signature->getXmlSecurityKey() : null;
 
         if (null != $key) {
             $msg .= '&SigAlg=' . urlencode($key->type);
@@ -214,8 +203,8 @@ class HttpRedirectBinding extends AbstractBinding
      */
     protected function getDestinationUrl($msg, SamlMessage $message, $destination)
     {
-        $destination = $message->getDestination() ? $message->getDestination() : $destination;
-        if (false === strpos($destination, '?')) {
+        $destination = $message->getDestination() ?: $destination;
+        if (!str_contains($destination, '?')) {
             $destination .= '?' . $msg;
         } else {
             $destination .= '&' . $msg;
@@ -259,6 +248,7 @@ class HttpRedirectBinding extends AbstractBinding
 
     /**
      * @param string $queryString
+     *
      * @return array
      */
     protected function parseQueryString($queryString)

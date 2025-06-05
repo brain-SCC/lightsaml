@@ -2,21 +2,18 @@
 
 namespace LightSaml\Builder\Action\Profile;
 
+use LightSaml\Action\ActionInterface;
 use LightSaml\Build\Container\BuildContainerInterface;
 use LightSaml\Builder\Action\CompositeActionBuilder;
 use LightSaml\Error\LightSamlBuildException;
 
 abstract class AbstractProfileActionBuilder extends CompositeActionBuilder
 {
-    /** @var BuildContainerInterface */
-    protected $buildContainer;
-
     /** @var bool */
     private $initialized = false;
 
-    public function __construct(BuildContainerInterface $buildContainer)
+    public function __construct(protected BuildContainerInterface $buildContainer)
     {
-        $this->buildContainer = $buildContainer;
     }
 
     /**
@@ -39,7 +36,7 @@ abstract class AbstractProfileActionBuilder extends CompositeActionBuilder
     abstract protected function doInitialize();
 
     /**
-     * @return \LightSaml\Action\ActionInterface
+     * @return ActionInterface
      */
     public function build()
     {

@@ -2,12 +2,16 @@
 
 namespace LightSaml\Model\XmlDSig;
 
+use DOMDocument;
+use DOMNode;
+use DOMXPath;
 use Exception;
 use LightSaml\Error\LightSamlSecurityException;
 use LightSaml\Error\LightSamlXmlException;
 use LightSaml\Model\Context\DeserializationContext;
 use LightSaml\Model\Context\SerializationContext;
 use LightSaml\SamlConstants;
+use LogicException;
 use RobRichards\XMLSecLibs\XMLSecEnc;
 use RobRichards\XMLSecLibs\XMLSecurityDSig;
 use RobRichards\XMLSecLibs\XMLSecurityKey;
@@ -78,12 +82,12 @@ class SignatureXmlReader extends AbstractSignatureReader
     /**
      * @return string
      *
-     * @throws \LightSaml\Error\LightSamlXmlException
+     * @throws LightSamlXmlException
      */
     public function getAlgorithm()
     {
-        $xpath = new \DOMXPath(
-            $this->signature->sigNode instanceof \DOMDocument
+        $xpath = new DOMXPath(
+            $this->signature->sigNode instanceof DOMDocument
             ? $this->signature->sigNode
             : $this->signature->sigNode->ownerDocument
         );
@@ -98,23 +102,22 @@ class SignatureXmlReader extends AbstractSignatureReader
         if (!$sigMethod->hasAttribute('Algorithm')) {
             throw new LightSamlXmlException('Missing Algorithm-attribute on SignatureMethod element.');
         }
-        $algorithm = $sigMethod->getAttribute('Algorithm');
 
-        return $algorithm;
+        return $sigMethod->getAttribute('Algorithm');
     }
 
     /**
-     * @throws \LogicException
+     * @throws LogicException
      */
-    public function serialize(\DOMNode $parent, SerializationContext $context)
+    public function serialize(DOMNode $parent, SerializationContext $context): never
     {
-        throw new \LogicException('SignatureXmlReader can not be serialized');
+        throw new LogicException('SignatureXmlReader can not be serialized');
     }
 
     /**
      * @throws Exception
      */
-    public function deserialize(\DOMNode $node, DeserializationContext $context)
+    public function deserialize(DOMNode $node, DeserializationContext $context)
     {
         $this->checkXmlNodeName($node, 'Signature', SamlConstants::NS_XMLDSIG);
 

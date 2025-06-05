@@ -2,6 +2,7 @@
 
 namespace LightSaml\Model\Assertion;
 
+use DOMNode;
 use LightSaml\Model\AbstractSamlModel;
 use LightSaml\Model\Context\DeserializationContext;
 use LightSaml\Model\Context\SerializationContext;
@@ -9,9 +10,6 @@ use LightSaml\SamlConstants;
 
 class Attribute extends AbstractSamlModel
 {
-    /** @var string */
-    protected $name;
-
     /** @var string */
     protected $nameFormat;
 
@@ -25,9 +23,8 @@ class Attribute extends AbstractSamlModel
      * @param string|null     $name
      * @param string|string[] $value
      */
-    public function __construct($name = null, $value = null)
+    public function __construct(protected $name = null, $value = null)
     {
-        $this->name = $name;
         if ($value) {
             $this->attributeValue = is_array($value) ? $value : [$value];
         }
@@ -71,10 +68,7 @@ class Attribute extends AbstractSamlModel
         return $this->attributeValue;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getFirstAttributeValue()
+    public function getFirstAttributeValue(): ?string
     {
         $arr = $this->attributeValue;
 
@@ -144,7 +138,7 @@ class Attribute extends AbstractSamlModel
     /**
      * @return void
      */
-    public function serialize(\DOMNode $parent, SerializationContext $context)
+    public function serialize(DOMNode $parent, SerializationContext $context)
     {
         $result = $this->createElement('Attribute', SamlConstants::NS_ASSERTION, $parent, $context);
 
@@ -153,7 +147,7 @@ class Attribute extends AbstractSamlModel
         $this->manyElementsToXml($this->getAllAttributeValues(), $result, $context, 'AttributeValue', SamlConstants::NS_ASSERTION);
     }
 
-    public function deserialize(\DOMNode $node, DeserializationContext $context)
+    public function deserialize(DOMNode $node, DeserializationContext $context)
     {
         $this->checkXmlNodeName($node, 'Attribute', SamlConstants::NS_ASSERTION);
 

@@ -1,13 +1,14 @@
 <?php
 
-namespace LightSaml\Tests\Action\Profile\Inbound\Response;
+namespace Tests\Action\Profile\Inbound\Response;
 
 use LightSaml\Action\Profile\Inbound\Response\HasAssertionsValidatorAction;
 use LightSaml\Context\Profile\ProfileContext;
+use LightSaml\Error\LightSamlContextException;
 use LightSaml\Model\Assertion\Assertion;
 use LightSaml\Model\Protocol\Response;
 use LightSaml\Profile\Profiles;
-use LightSaml\Tests\BaseTestCase;
+use Tests\BaseTestCase;
 
 class HasAssertionsValidatorActionTest extends BaseTestCase
 {
@@ -33,7 +34,7 @@ class HasAssertionsValidatorActionTest extends BaseTestCase
     public function test_throws_context_exception_if_no_assertions()
     {
         $this->expectExceptionMessage("Response must contain at least one assertion");
-        $this->expectException(\LightSaml\Error\LightSamlContextException::class);
+        $this->expectException(LightSamlContextException::class);
         $action = new HasAssertionsValidatorAction($this->getLoggerMock());
 
         $context = new ProfileContext(Profiles::SSO_IDP_RECEIVE_AUTHN_REQUEST, ProfileContext::ROLE_IDP);

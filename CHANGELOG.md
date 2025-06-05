@@ -4,6 +4,67 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## 4.5.0 (2025-02-28)
+
+### Styles
+
+* Use PHP CS Fixer as linter (#87)
+
+## 4.4.0 (2025-02-24)
+
+### Features
+
+* Can handle compressed or uncompressed post request
+
+### Code Refactoring
+
+* Remove monolog/monolog dependency (#82)
+* Remove Symfony dom-crawler & css-selector dependency (#84)
+* Remove php-conventional-changelog dependency
+
+### Tests
+
+* Remove LightSaml prefix
+
+### Bug Fixes
+
+* Helper::validateWellFormedUriString() return false on null
+
+## 4.3.2 (2025-02-24)
+
+### Code Refactoring
+
+* Mark Pimple Bridge classes as deprecated
+
+## 4.3.1 (2025-02-24)
+
+### Bug Fixes
+
+* Can use Symfony v7+
+
+## 4.3.0 (2025-02-23)
+
+### Code Refactoring
+
+* Minimum requirement PHP 8.1 (#76)
+* Use Schema::validate in XsdValidator (#77)
+
+### Bug Fixes
+
+* Helper validateNotBefore return true when is on or after notBefore (#56)
+
+## 4.2.2 (2025-02-11)
+
+### Documentation
+
+* Change cookbook URL
+
+## 4.2.1 (2025-02-11)
+
+### Bug Fixes
+
+* Remove implicitly nullable parameter declarations (#75)
+
 ## 4.2.0 (2024-02-08)
 
 ### Features

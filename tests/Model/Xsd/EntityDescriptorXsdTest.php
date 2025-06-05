@@ -1,6 +1,6 @@
 <?php
 
-namespace LightSaml\Tests\Model\Xsd;
+namespace Tests\Model\Xsd;
 
 use LightSaml\ClaimTypes;
 use LightSaml\Credential\UsageType;
@@ -17,7 +17,7 @@ use LightSaml\Model\Metadata\SingleSignOnService;
 use LightSaml\Model\Metadata\SpSsoDescriptor;
 use LightSaml\SamlConstants;
 
-class EntityDescriptorXsdTest extends AbstractXsdValidationTest
+class EntityDescriptorXsdTest extends AbstractXsdValidation
 {
     public function test_entity_descriptor_with_xsd()
     {
@@ -29,9 +29,10 @@ class EntityDescriptorXsdTest extends AbstractXsdValidationTest
 
         $entityDescriptor->addItem($idpSsoDescriptor = new IdpSsoDescriptor());
         $idpSsoDescriptor
-            ->addAttribute((new Attribute(ClaimTypes::EMAIL_ADDRESS))
-                ->setNameFormat('urn:oasis:names:tc:SAML:2.0:attrname-format:uri')
-                ->setFriendlyName('Email address')
+            ->addAttribute(
+                (new Attribute(ClaimTypes::EMAIL_ADDRESS))
+                    ->setNameFormat('urn:oasis:names:tc:SAML:2.0:attrname-format:uri')
+                    ->setFriendlyName('Email address')
             )
             ->addSingleSignOnService(new SingleSignOnService('https://idp.com/login', SamlConstants::BINDING_SAML2_HTTP_POST))
             ->addSingleSignOnService(new SingleSignOnService('https://idp.com/login', SamlConstants::BINDING_SAML2_HTTP_REDIRECT))
@@ -59,14 +60,16 @@ class EntityDescriptorXsdTest extends AbstractXsdValidationTest
         ;
 
         $entityDescriptor
-            ->addContactPerson((new ContactPerson())
-                ->setContactType(ContactPerson::TYPE_SUPPORT)
-                ->setEmailAddress('support@idp.com')
+            ->addContactPerson(
+                (new ContactPerson())
+                    ->setContactType(ContactPerson::TYPE_SUPPORT)
+                    ->setEmailAddress('support@idp.com')
             )
-            ->addOrganization((new Organization())
-                ->setOrganizationName('Org name')
-                ->setOrganizationDisplayName('Org display name')
-                ->setOrganizationURL('https://idp.com')
+            ->addOrganization(
+                (new Organization())
+                    ->setOrganizationName('Org name')
+                    ->setOrganizationDisplayName('Org display name')
+                    ->setOrganizationURL('https://idp.com')
             )
         ;
 

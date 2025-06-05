@@ -1,11 +1,12 @@
 <?php
 
-namespace LightSaml\Tests\State\Sso;
+namespace Tests\State\Sso;
 
 use LightSaml\Meta\ParameterBag;
 use LightSaml\State\Sso\SsoSessionState;
 use LightSaml\State\Sso\SsoState;
-use LightSaml\Tests\BaseTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Tests\BaseTestCase;
 
 class SsoStateTest extends BaseTestCase
 {
@@ -15,7 +16,7 @@ class SsoStateTest extends BaseTestCase
         $this->assertTrue(true);
     }
 
-    public function property_getter_setter_provider()
+    public static function property_getter_setter_provider()
     {
         return [
             ['LocalSessionId']
@@ -23,11 +24,11 @@ class SsoStateTest extends BaseTestCase
     }
 
     /**
-     * @dataProvider  property_getter_setter_provider
      *
      * @param string $property
      * @param string $value
      */
+    #[DataProvider('property_getter_setter_provider')]
     public function test_property_getter_setter($property, $value = 'some.value')
     {
         $state = new SsoState();
@@ -183,7 +184,7 @@ class SsoStateTest extends BaseTestCase
 
         $state->addOption('a', 1);
         $this->assertTrue($state->hasOption('a'));
-        $this->assertEquals(['a'=>1], $state->getOptions());
+        $this->assertEquals(['a' => 1], $state->getOptions());
 
         $state->removeOption('a');
         $this->assertFalse($state->hasOption('a'));
@@ -244,8 +245,6 @@ class SsoStateTest extends BaseTestCase
     }
 
     /**
-     * @param array $arrIdp
-     * @param array $arrSp
      *
      * @return SsoState
      */

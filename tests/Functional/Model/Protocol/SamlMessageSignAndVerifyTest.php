@@ -1,7 +1,8 @@
 <?php
 
-namespace LightSaml\Tests\Functional\Model\Protocol;
+namespace Tests\Functional\Model\Protocol;
 
+use DateTime;
 use LightSaml\Credential\KeyHelper;
 use LightSaml\Credential\X509Certificate;
 use LightSaml\Helper;
@@ -21,7 +22,8 @@ use LightSaml\Model\Protocol\StatusCode;
 use LightSaml\Model\XmlDSig\AbstractSignatureReader;
 use LightSaml\Model\XmlDSig\SignatureWriter;
 use LightSaml\SamlConstants;
-use LightSaml\Tests\BaseTestCase;
+use RobRichards\XMLSecLibs\XMLSecurityKey;
+use Tests\BaseTestCase;
 
 class SamlMessageSignAndVerifyTest extends BaseTestCase
 {
@@ -72,26 +74,21 @@ class SamlMessageSignAndVerifyTest extends BaseTestCase
         $this->verify($logoutResponse);
     }
 
-    /**
-     * @param SamlMessage $message
-     */
     private function verify(SamlMessage $message)
     {
         $message
             ->setID(Helper::generateID())
-            ->setIssueInstant(new \DateTime())
+            ->setIssueInstant(new DateTime())
             ->setIssuer(new Issuer('https://mydomain.com'))
         ;
         $xml = $this->signAndSerialize($message);
-        $this->deserializeAndVerify($xml, get_class($message));
+        $this->deserializeAndVerify($xml, $message::class);
     }
 
     /**
-     * @param SamlMessage $message
-     *
      * @return string
      */
-    private function signAndSerialize(SamlMessage $message)
+    private function signAndSerialize(SamlMessage $message): string|false
     {
         $signatureWriter = new SignatureWriter($this->getCertificate(), $this->getPrivateKey());
         $message->setSignature($signatureWriter);
@@ -99,9 +96,7 @@ class SamlMessageSignAndVerifyTest extends BaseTestCase
         $serializationContext = new SerializationContext();
         $message->serialize($serializationContext->getDocument(), $serializationContext);
 
-        $xml = $serializationContext->getDocument()->saveXML();
-
-        return $xml;
+        return $serializationContext->getDocument()->saveXML();
     }
 
     /**
@@ -129,14 +124,14 @@ class SamlMessageSignAndVerifyTest extends BaseTestCase
      */
     private function getCertificate()
     {
-        return X509Certificate::fromFile(__DIR__.'/../../../resources/web_saml.crt');
+        return X509Certificate::fromFile(__DIR__ . '/../../../resources/web_saml.crt');
     }
 
     /**
-     * @return \RobRichards\XMLSecLibs\XMLSecurityKey
+     * @return XMLSecurityKey
      */
     private function getPrivateKey()
     {
-        return KeyHelper::createPrivateKey(__DIR__.'/../../../resources/web_saml.key', null, true);
+        return KeyHelper::createPrivateKey(__DIR__ . '/../../../resources/web_saml.key', null, true);
     }
 }

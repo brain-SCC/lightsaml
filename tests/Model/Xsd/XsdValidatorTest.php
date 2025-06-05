@@ -1,9 +1,9 @@
 <?php
 
-namespace LightSaml\Tests\Model\Xsd;
+namespace Tests\Model\Xsd;
 
-use LightSaml\Tests\BaseTestCase;
 use LightSaml\Validator\Model\Xsd\XsdValidator;
+use Tests\BaseTestCase;
 
 class XsdValidatorTest extends BaseTestCase
 {
@@ -17,7 +17,7 @@ class XsdValidatorTest extends BaseTestCase
     public function test_fails_on_empty_xml()
     {
         $validator = new XsdValidator();
-        $arr = $validator->validateProtocol('<a><');
+        $arr = $validator->validateProtocol('');
         $this->assertGreaterThan(0, count($arr));
     }
 }

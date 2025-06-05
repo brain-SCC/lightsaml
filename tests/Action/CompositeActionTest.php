@@ -1,12 +1,15 @@
 <?php
 
-namespace LightSaml\Tests\Action;
+namespace Tests\Action;
 
 use LightSaml\Action\ActionInterface;
 use LightSaml\Action\CompositeAction;
-use LightSaml\Tests\BaseTestCase;
-use LightSaml\Tests\Mock\Action\BarAction;
-use LightSaml\Tests\Mock\Action\FooAction;
+use LightSaml\Context\ContextInterface;
+use PHPUnit\Framework\MockObject\MockObject;
+use RuntimeException;
+use Tests\BaseTestCase;
+use Tests\Mock\Action\BarAction;
+use Tests\Mock\Action\FooAction;
 
 class CompositeActionTest extends BaseTestCase
 {
@@ -69,7 +72,7 @@ class CompositeActionTest extends BaseTestCase
 
                 return $action2replacement;
             } else {
-                throw new \RuntimeException('Unexpected action given in map() method');
+                throw new RuntimeException('Unexpected action given in map() method');
             }
         });
 
@@ -117,12 +120,12 @@ class CompositeActionTest extends BaseTestCase
         $expectedValue = <<<EOT
 {
     "LightSaml\\\\Action\\\\CompositeAction": {
-        "LightSaml\\\\Tests\\\\Mock\\\\Action\\\\FooAction": [],
+        "Tests\\\\Mock\\\\Action\\\\FooAction": [],
         "LightSaml\\\\Action\\\\CompositeAction": {
-            "LightSaml\\\\Tests\\\\Mock\\\\Action\\\\FooAction": [],
-            "LightSaml\\\\Tests\\\\Mock\\\\Action\\\\BarAction": []
+            "Tests\\\\Mock\\\\Action\\\\FooAction": [],
+            "Tests\\\\Mock\\\\Action\\\\BarAction": []
         },
-        "LightSaml\\\\Tests\\\\Mock\\\\Action\\\\BarAction": []
+        "Tests\\\\Mock\\\\Action\\\\BarAction": []
     }
 }
 EOT;
@@ -131,18 +134,18 @@ EOT;
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|\LightSaml\Action\ActionInterface
+     * @return MockObject|ActionInterface
      */
     private function getActionMock()
     {
-        return $this->getMockBuilder(\LightSaml\Action\ActionInterface::class)->getMock();
+        return $this->getMockBuilder(ActionInterface::class)->getMock();
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|\LightSaml\Context\ContextInterface
+     * @return MockObject|ContextInterface
      */
     private function getContextMock()
     {
-        return $this->getMockBuilder(\LightSaml\Context\ContextInterface::class)->getMock();
+        return $this->getMockBuilder(ContextInterface::class)->getMock();
     }
 }

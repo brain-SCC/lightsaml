@@ -2,11 +2,15 @@
 
 namespace LightSaml\Model\Assertion;
 
+use DateTime;
+use DOMNode;
+use InvalidArgumentException;
 use LightSaml\Helper;
 use LightSaml\Model\AbstractSamlModel;
 use LightSaml\Model\Context\DeserializationContext;
 use LightSaml\Model\Context\SerializationContext;
 use LightSaml\Model\XmlDSig\Signature;
+use LightSaml\Model\XmlDSig\SignatureXmlReader;
 use LightSaml\SamlConstants;
 
 class Assertion extends AbstractSamlModel
@@ -80,12 +84,7 @@ class Assertion extends AbstractSamlModel
         if ($this->getSubject()->getNameID()->getValue() != $nameId) {
             return false;
         }
-
-        if ($this->getSubject()->getNameID()->getFormat() != $format) {
-            return false;
-        }
-
-        return true;
+        return $this->getSubject()->getNameID()->getFormat() == $format;
     }
 
     /**
@@ -128,7 +127,7 @@ class Assertion extends AbstractSamlModel
     /**
      * @return Assertion
      */
-    public function setConditions(Conditions $conditions = null)
+    public function setConditions(?Conditions $conditions = null)
     {
         $this->conditions = $conditions;
 
@@ -136,7 +135,7 @@ class Assertion extends AbstractSamlModel
     }
 
     /**
-     * @return \LightSaml\Model\Assertion\Conditions|null
+     * @return Conditions|null
      */
     public function getConditions()
     {
@@ -164,9 +163,9 @@ class Assertion extends AbstractSamlModel
     }
 
     /**
-     * @param string|int|\DateTime $issueInstant
+     * @param string|int|DateTime $issueInstant
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      *
      * @return Assertion
      */
@@ -194,7 +193,7 @@ class Assertion extends AbstractSamlModel
             return Helper::time2string($this->issueInstant);
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -203,18 +202,17 @@ class Assertion extends AbstractSamlModel
     public function getIssueInstantDateTime()
     {
         if ($this->issueInstant) {
-            return new \DateTime('@' . $this->issueInstant);
+            return new DateTime('@' . $this->issueInstant);
         }
 
-        return null;
+        return;
     }
 
     /**
-     * @param Issuer $issuer
      *
      * @return Assertion
      */
-    public function setIssuer(Issuer $issuer = null)
+    public function setIssuer(?Issuer $issuer = null)
     {
         $this->issuer = $issuer;
 
@@ -222,7 +220,7 @@ class Assertion extends AbstractSamlModel
     }
 
     /**
-     * @return \LightSaml\Model\Assertion\Issuer
+     * @return Issuer
      */
     public function getIssuer()
     {
@@ -230,11 +228,10 @@ class Assertion extends AbstractSamlModel
     }
 
     /**
-     * @param Signature $signature
      *
      * @return Assertion
      */
-    public function setSignature(Signature $signature = null)
+    public function setSignature(?Signature $signature = null)
     {
         $this->signature = $signature;
 
@@ -242,7 +239,7 @@ class Assertion extends AbstractSamlModel
     }
 
     /**
-     * @return \LightSaml\Model\XmlDSig\Signature|null
+     * @return Signature|null
      */
     public function getSignature()
     {
@@ -260,7 +257,7 @@ class Assertion extends AbstractSamlModel
     }
 
     /**
-     * @return \LightSaml\Model\Assertion\Subject
+     * @return Subject
      */
     public function getSubject()
     {
@@ -306,7 +303,7 @@ class Assertion extends AbstractSamlModel
     }
 
     /**
-     * @return \LightSaml\Model\Assertion\AuthnStatement[]
+     * @return AuthnStatement[]
      */
     public function getAllAuthnStatements()
     {
@@ -321,7 +318,7 @@ class Assertion extends AbstractSamlModel
     }
 
     /**
-     * @return \LightSaml\Model\Assertion\AttributeStatement[]
+     * @return AttributeStatement[]
      */
     public function getAllAttributeStatements()
     {
@@ -336,7 +333,7 @@ class Assertion extends AbstractSamlModel
     }
 
     /**
-     * @return \LightSaml\Model\Assertion\AttributeStatement|null
+     * @return AttributeStatement|null
      */
     public function getFirstAttributeStatement()
     {
@@ -346,11 +343,11 @@ class Assertion extends AbstractSamlModel
             }
         }
 
-        return null;
+        return;
     }
 
     /**
-     * @return \LightSaml\Model\Assertion\AuthnStatement|null
+     * @return AuthnStatement|null
      */
     public function getFirstAuthnStatement()
     {
@@ -360,7 +357,7 @@ class Assertion extends AbstractSamlModel
             }
         }
 
-        return null;
+        return;
     }
 
     //endregion
@@ -370,13 +367,7 @@ class Assertion extends AbstractSamlModel
      */
     public function hasBearerSubject()
     {
-        if ($this->getAllAuthnStatements() && $this->getSubject()) {
-            if ($this->getSubject()->getBearerConfirmations()) {
-                return true;
-            }
-        }
-
-        return false;
+        return $this->getAllAuthnStatements() && $this->getSubject() && $this->getSubject()->getBearerConfirmations();
     }
 
     protected function prepareForXml()
@@ -392,7 +383,7 @@ class Assertion extends AbstractSamlModel
     /**
      * @return void
      */
-    public function serialize(\DOMNode $parent, SerializationContext $context)
+    public function serialize(DOMNode $parent, SerializationContext $context)
     {
         $this->prepareForXml();
 
@@ -414,16 +405,16 @@ class Assertion extends AbstractSamlModel
         $this->singleElementsToXml(['Signature'], $result, $context);
     }
 
-    public function deserialize(\DOMNode $node, DeserializationContext $context)
+    public function deserialize(DOMNode $node, DeserializationContext $context)
     {
         $this->checkXmlNodeName($node, 'Assertion', SamlConstants::NS_ASSERTION);
 
         $this->attributesFromXml($node, ['ID', 'Version', 'IssueInstant']);
 
         $this->singleElementsFromXml($node, $context, [
-            'Issuer' => ['saml', 'LightSaml\Model\Assertion\Issuer'],
-            'Subject' => ['saml', 'LightSaml\Model\Assertion\Subject'],
-            'Conditions' => ['saml', 'LightSaml\Model\Assertion\Conditions'],
+            'Issuer' => ['saml', Issuer::class],
+            'Subject' => ['saml', Subject::class],
+            'Conditions' => ['saml', Conditions::class],
         ]);
 
         $this->manyElementsFromXml(
@@ -431,7 +422,7 @@ class Assertion extends AbstractSamlModel
             $context,
             'AuthnStatement',
             'saml',
-            'LightSaml\Model\Assertion\AuthnStatement',
+            AuthnStatement::class,
             'addItem'
         );
 
@@ -440,12 +431,12 @@ class Assertion extends AbstractSamlModel
             $context,
             'AttributeStatement',
             'saml',
-            'LightSaml\Model\Assertion\AttributeStatement',
+            AttributeStatement::class,
             'addItem'
         );
 
         $this->singleElementsFromXml($node, $context, [
-            'Signature' => ['ds', 'LightSaml\Model\XmlDSig\SignatureXmlReader'],
+            'Signature' => ['ds', SignatureXmlReader::class],
         ]);
     }
 }

@@ -18,8 +18,6 @@ class BindingCriteria implements CriteriaInterface
      */
     public function __construct(array $bindings)
     {
-        $this->bindings = [];
-
         foreach ($bindings as $binding) {
             $this->add($binding);
         }
@@ -42,18 +40,17 @@ class BindingCriteria implements CriteriaInterface
      *
      * @return string[]
      */
-    public function getAllBindings()
+    public function getAllBindings(): array
     {
         return array_keys($this->bindings);
     }
 
     /**
-     * @param $binding
      *
      * @return int|null Preference of a binding or null if not preferred
      */
     public function getPreference($binding)
     {
-        return isset($this->bindings[$binding]) ? $this->bindings[$binding] : null;
+        return $this->bindings[$binding] ?? null;
     }
 }

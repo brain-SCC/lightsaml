@@ -10,6 +10,7 @@ use LightSaml\Model\Protocol\AuthnRequest;
 use LightSaml\Model\Protocol\LogoutRequest;
 use LightSaml\Model\Protocol\Response;
 use LightSaml\Resolver\Signature\SignatureResolverInterface;
+use LogicException;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -17,14 +18,9 @@ use Psr\Log\LoggerInterface;
  */
 class SignMessageAction extends AbstractProfileAction
 {
-    /** @var SignatureResolverInterface */
-    protected $signatureResolver;
-
-    public function __construct(LoggerInterface $logger, SignatureResolverInterface $signatureResolver)
+    public function __construct(LoggerInterface $logger, protected SignatureResolverInterface $signatureResolver)
     {
         parent::__construct($logger);
-
-        $this->signatureResolver = $signatureResolver;
     }
 
     protected function doExecute(ProfileContext $context)
@@ -73,6 +69,6 @@ class SignMessageAction extends AbstractProfileAction
             return $trustOptions->getSignResponse();
         }
 
-        throw new \LogicException(sprintf('Unexpected message type "%s"', get_class($message)));
+        throw new LogicException(sprintf('Unexpected message type "%s"', $message::class));
     }
 }

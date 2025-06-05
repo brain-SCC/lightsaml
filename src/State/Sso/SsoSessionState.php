@@ -2,10 +2,12 @@
 
 namespace LightSaml\State\Sso;
 
+use DateTime;
 use LightSaml\Error\LightSamlException;
 use LightSaml\Meta\ParameterBag;
+use Serializable;
 
-class SsoSessionState implements \Serializable
+class SsoSessionState implements Serializable
 {
     /** @var string */
     protected $idpEntityId;
@@ -22,17 +24,16 @@ class SsoSessionState implements \Serializable
     /** @var string */
     protected $sessionIndex;
 
-    /** @var \DateTime */
+    /** @var DateTime */
     protected $sessionInstant;
 
-    /** @var \DateTime */
+    /** @var DateTime */
     protected $firstAuthOn;
 
-    /** @var \DateTime */
+    /** @var DateTime */
     protected $lastAuthOn;
 
-    /** @var ParameterBag */
-    protected $parameters;
+    protected ParameterBag $parameters;
 
     public function __construct()
     {
@@ -140,7 +141,7 @@ class SsoSessionState implements \Serializable
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
     public function getFirstAuthOn()
     {
@@ -148,7 +149,7 @@ class SsoSessionState implements \Serializable
     }
 
     /**
-     * @param \DateTime $firstAuthOn
+     * @param DateTime $firstAuthOn
      *
      * @return SsoSessionState
      */
@@ -160,7 +161,7 @@ class SsoSessionState implements \Serializable
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
     public function getLastAuthOn()
     {
@@ -168,7 +169,7 @@ class SsoSessionState implements \Serializable
     }
 
     /**
-     * @param \DateTime $lastAuthOn
+     * @param DateTime $lastAuthOn
      *
      * @return SsoSessionState
      */
@@ -180,7 +181,7 @@ class SsoSessionState implements \Serializable
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
     public function getSessionInstant()
     {
@@ -188,7 +189,7 @@ class SsoSessionState implements \Serializable
     }
 
     /**
-     * @param \DateTime $sessionInstant
+     * @param DateTime $sessionInstant
      *
      * @return SsoSessionState
      */
@@ -221,11 +222,10 @@ class SsoSessionState implements \Serializable
      * @deprecated Since 1.2, will be removed in 2.0. Use getParameters() instead
      *
      * @param string $name
-     * @param mixed  $value
      *
      * @return SsoSessionState
      */
-    public function addOption($name, $value)
+    public function addOption($name, mixed $value)
     {
         $this->parameters->set($name, $value);
 
@@ -263,7 +263,7 @@ class SsoSessionState implements \Serializable
      *
      * @return string Other party id
      *
-     * @throws \LightSaml\Error\LightSamlException If $partyId does not match sp or idp entity id
+     * @throws LightSamlException If $partyId does not match sp or idp entity id
      */
     public function getOtherPartyId($partyId)
     {
@@ -287,6 +287,7 @@ class SsoSessionState implements \Serializable
     /**
      * (PHP >= 8.1)
      * String representation of object.
+     *
      * @return array
      */
     public function __serialize()
@@ -317,7 +318,6 @@ class SsoSessionState implements \Serializable
 
     /**
      * (PHP >= 8.1)
-     * @param array $data
      *
      * @return void
      */
@@ -327,18 +327,7 @@ class SsoSessionState implements \Serializable
         // older data which does not include all properties.
         $data = array_merge($data, array_fill(0, 5, null));
 
-        list(
-            $this->idpEntityId,
-            $this->spEntityId,
-            $this->nameId,
-            $this->nameIdFormat,
-            $this->sessionIndex,
-            $this->sessionInstant,
-            $this->firstAuthOn,
-            $this->lastAuthOn,
-            $options,
-            $this->parameters
-        ) = $data;
+        [$this->idpEntityId, $this->spEntityId, $this->nameId, $this->nameIdFormat, $this->sessionIndex, $this->sessionInstant, $this->firstAuthOn, $this->lastAuthOn, $options, $this->parameters] = $data;
 
         // if deserialized from old format, set old options to new parameters
         if ($options && 0 == $this->parameters->count()) {

@@ -10,22 +10,17 @@ use Psr\Log\LoggerInterface;
 
 class AssertBindingTypeAction extends AbstractProfileAction
 {
-    /** @var string[] */
-    protected $expectedBindingTypes;
-
     /**
      * @param string[] $expectedBindingTypes
      */
-    public function __construct(LoggerInterface $logger, array $expectedBindingTypes)
+    public function __construct(LoggerInterface $logger, protected array $expectedBindingTypes)
     {
         parent::__construct($logger);
-
-        $this->expectedBindingTypes = $expectedBindingTypes;
     }
 
     protected function doExecute(ProfileContext $context)
     {
-        if (false === in_array($context->getInboundContext()->getBindingType(), $this->expectedBindingTypes)) {
+        if (false === in_array($context->getInboundContext()->getBindingType(), $this->expectedBindingTypes, true)) {
             $message = sprintf(
                 'Unexpected binding type "%s" - expected binding types are: %s',
                 $context->getInboundContext()->getBindingType(),

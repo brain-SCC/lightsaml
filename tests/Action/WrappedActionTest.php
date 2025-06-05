@@ -1,10 +1,12 @@
 <?php
 
-namespace LightSaml\Tests\Action;
+namespace Tests\Action;
 
 use LightSaml\Action\ActionInterface;
 use LightSaml\Action\WrappedAction;
-use LightSaml\Tests\BaseTestCase;
+use LightSaml\Context\ContextInterface;
+use PHPUnit\Framework\MockObject\MockObject;
+use Tests\BaseTestCase;
 
 class WrappedActionTest extends BaseTestCase
 {
@@ -12,10 +14,10 @@ class WrappedActionTest extends BaseTestCase
     {
         $context = $this->getContextMock();
 
-        /** @var ActionInterface|\PHPUnit_Framework_MockObject_MockObject $action */
+        /** @var ActionInterface|MockObject $action */
         $action = $this->getMockBuilder(ActionInterface::class)->getMock();
-        /** @var WrappedAction|\PHPUnit_Framework_MockObject_MockObject $wrapper */
-        $wrapper = $this->getMockForAbstractClass(WrappedAction::class, array($action));
+        /** @var WrappedAction|MockObject $wrapper */
+        $wrapper = $this->getMockForAbstractClass(WrappedAction::class, [$action]);
 
         $beforeCalled = false;
         $executeCalled = false;
@@ -59,10 +61,10 @@ class WrappedActionTest extends BaseTestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|\LightSaml\Context\ContextInterface
+     * @return MockObject|ContextInterface
      */
     private function getContextMock()
     {
-        return $this->getMockBuilder(\LightSaml\Context\ContextInterface::class)->getMock();
+        return $this->getMockBuilder(ContextInterface::class)->getMock();
     }
 }

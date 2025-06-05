@@ -1,11 +1,12 @@
 <?php
 
-namespace LightSaml\Tests\Action;
+namespace Tests\Action;
 
 use LightSaml\Action\ActionInterface;
 use LightSaml\Action\ActionLogWrapper;
-use LightSaml\Tests\BaseTestCase;
-use Psr\Log\LoggerInterface;
+use LightSaml\Context\ContextInterface;
+use PHPUnit\Framework\MockObject\MockObject;
+use Tests\BaseTestCase;
 
 class ActionLogWrapperTest extends BaseTestCase
 {
@@ -22,7 +23,7 @@ class ActionLogWrapperTest extends BaseTestCase
         $loggerMock->expects($this->once())
             ->method('debug')
             ->willReturnCallback(function ($pMessage, $pContext) use ($action, $context) {
-                $expectedMessage = sprintf('Executing action "%s"', get_class($action));
+                $expectedMessage = sprintf('Executing action "%s"', $action::class);
                 $this->assertEquals($expectedMessage, $pMessage);
                 $this->assertArrayHasKey('context', $pContext);
                 $this->assertArrayHasKey('action', $pContext);
@@ -38,7 +39,7 @@ class ActionLogWrapperTest extends BaseTestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|ActionInterface
+     * @return MockObject|ActionInterface
      */
     private function getActionMock()
     {
@@ -46,10 +47,10 @@ class ActionLogWrapperTest extends BaseTestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|\LightSaml\Context\ContextInterface
+     * @return MockObject|ContextInterface
      */
     private function getContextMock()
     {
-        return $this->getMockBuilder(\LightSaml\Context\ContextInterface::class)->getMock();
+        return $this->getMockBuilder(ContextInterface::class)->getMock();
     }
 }

@@ -12,18 +12,16 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 
+/**
+ * @deprecated 5.0.0 No longer used by internal code and not recommended
+ */
 class SystemContainerProvider implements ServiceProviderInterface
 {
-    /** @var bool */
-    private $mockSession;
-
-    /** @var EventDispatcherInterface|null */
-    private $eventDispatcher;
-
-    public function __construct($mockSession = false, EventDispatcherInterface $eventDispatcher = null)
+    /**
+     * @param bool $mockSession
+     */
+    public function __construct(private $mockSession = false, private readonly ?EventDispatcherInterface $eventDispatcher = null)
     {
-        $this->mockSession = $mockSession;
-        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**

@@ -20,14 +20,9 @@ use Psr\Log\LoggerInterface;
 
 class DecryptAssertionsAction extends AbstractProfileAction
 {
-    /** @var CredentialResolverInterface */
-    protected $credentialResolver;
-
-    public function __construct(LoggerInterface $logger, CredentialResolverInterface $credentialResolver)
+    public function __construct(LoggerInterface $logger, protected CredentialResolverInterface $credentialResolver)
     {
         parent::__construct($logger);
-
-        $this->credentialResolver = $credentialResolver;
     }
 
     protected function doExecute(ProfileContext $context)

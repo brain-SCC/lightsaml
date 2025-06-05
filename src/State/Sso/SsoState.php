@@ -3,14 +3,14 @@
 namespace LightSaml\State\Sso;
 
 use LightSaml\Meta\ParameterBag;
+use Serializable;
 
-class SsoState implements \Serializable
+class SsoState implements Serializable
 {
     /** @var string */
     private $localSessionId;
 
-    /** @var ParameterBag */
-    private $parameters;
+    private ParameterBag $parameters;
 
     /** @var SsoSessionState[] */
     private $ssoSessions = [];
@@ -62,11 +62,10 @@ class SsoState implements \Serializable
      * @deprecated Since 1.2, to be removed in 2.0. Use getParameters() instead
      *
      * @param string $name
-     * @param mixed  $value
      *
      * @return SsoState
      */
-    public function addOption($name, $value)
+    public function addOption($name, mixed $value)
     {
         $this->parameters->set($name, $value);
 
@@ -133,11 +132,6 @@ class SsoState implements \Serializable
     }
 
     /**
-     * @param $idpEntityId
-     * @param $spEntityId
-     * @param $nameId
-     * @param $nameIdFormat
-     * @param $sessionIndex
      *
      * @return SsoSessionState[]
      */
@@ -147,11 +141,11 @@ class SsoState implements \Serializable
 
         foreach ($this->ssoSessions as $ssoSession) {
             if (
-                (!$idpEntityId || $ssoSession->getIdpEntityId() === $idpEntityId) &&
-                (!$spEntityId || $ssoSession->getSpEntityId() === $spEntityId) &&
-                (!$nameId || $ssoSession->getNameId() === $nameId) &&
-                (!$nameIdFormat || $ssoSession->getNameIdFormat() === $nameIdFormat) &&
-                (!$sessionIndex || $ssoSession->getSessionIndex() === $sessionIndex)
+                (!$idpEntityId || $ssoSession->getIdpEntityId() === $idpEntityId)
+                && (!$spEntityId || $ssoSession->getSpEntityId() === $spEntityId)
+                && (!$nameId || $ssoSession->getNameId() === $nameId)
+                && (!$nameIdFormat || $ssoSession->getNameIdFormat() === $nameIdFormat)
+                && (!$sessionIndex || $ssoSession->getSessionIndex() === $sessionIndex)
             ) {
                 $result[] = $ssoSession;
             }
@@ -182,6 +176,7 @@ class SsoState implements \Serializable
 
     /**
      * (PHP >= 8.1)
+     *
      * @return array
      */
     public function __serialize()
@@ -205,8 +200,6 @@ class SsoState implements \Serializable
     }
 
     /**
-     * @param array $data
-     *
      * @return void
      */
     public function __unserialize(array $data)
@@ -216,11 +209,13 @@ class SsoState implements \Serializable
         $data = array_merge($data, array_fill(0, 5, null));
         $oldOptions = null;
 
-        list(
+        [
             $this->localSessionId,
             $this->ssoSessions,
-            $oldOptions, // old deprecated options
-            $this->parameters) = $data;
+            $oldOptions,
+            // old deprecated options
+            $this->parameters,
+        ] = $data;
 
         // in case it was serialized in old way, copy old options to parameters
         if ($oldOptions && 0 == $this->parameters->count()) {

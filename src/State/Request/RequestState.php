@@ -3,22 +3,17 @@
 namespace LightSaml\State\Request;
 
 use LightSaml\Meta\ParameterBag;
+use Serializable;
 
-class RequestState implements \Serializable
+class RequestState implements Serializable
 {
-    /** @var string */
-    private $id;
-
-    /** @var ParameterBag */
-    private $parameters;
+    private ParameterBag $parameters;
 
     /**
      * @param string $id
-     * @param mixed  $nonce
      */
-    public function __construct($id = null, $nonce = null)
+    public function __construct(private $id = null, mixed $nonce = null)
     {
-        $this->id = $id;
         $this->parameters = new ParameterBag();
         if ($nonce) {
             $this->parameters->set('nonce', $nonce);
@@ -56,11 +51,9 @@ class RequestState implements \Serializable
     /**
      * @deprecated Since 1.2, to be removed in 2.0. Use getParameters() instead
      *
-     * @param mixed $nonce
-     *
      * @return RequestState
      */
-    public function setNonce($nonce)
+    public function setNonce(mixed $nonce)
     {
         $this->parameters->set('nonce', $nonce);
 
@@ -102,7 +95,6 @@ class RequestState implements \Serializable
         return [$this->id, $nonce, $this->parameters->__serialize()];
     }
 
-
     /**
      * @param string $serialized The string representation of the object
      *
@@ -114,15 +106,13 @@ class RequestState implements \Serializable
     }
 
     /**
-     * @param array $serialized
-     *
      * @return void
      */
     public function __unserialize(array $serialized)
     {
         $nonce = null;
         $this->parameters = new ParameterBag();
-        list($this->id, $nonce, $parameters) = $serialized;
+        [$this->id, $nonce, $parameters] = $serialized;
         $this->parameters->__unserialize($parameters);
     }
 }

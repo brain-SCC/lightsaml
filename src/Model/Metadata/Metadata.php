@@ -2,11 +2,16 @@
 
 namespace LightSaml\Model\Metadata;
 
+use DOMComment;
+use DOMNode;
+use Exception;
+use InvalidArgumentException;
 use LightSaml\Error\LightSamlXmlException;
 use LightSaml\Model\AbstractSamlModel;
 use LightSaml\Model\Context\DeserializationContext;
 use LightSaml\Model\SamlElementInterface;
 use LightSaml\SamlConstants;
+use LogicException;
 
 abstract class Metadata extends AbstractSamlModel
 {
@@ -28,21 +33,21 @@ abstract class Metadata extends AbstractSamlModel
      *
      * @return EntityDescriptor|EntitiesDescriptor
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public static function fromXML($xml, DeserializationContext $context)
     {
         if (false == is_string($xml)) {
-            throw new \InvalidArgumentException('Expecting string');
+            throw new InvalidArgumentException('Expecting string');
         }
 
         $context->getDocument()->loadXML($xml);
 
         $node = $context->getDocument()->firstChild;
-        while ($node && $node instanceof \DOMComment) {
+        while ($node && $node instanceof DOMComment) {
             $node = $node->nextSibling;
         }
-        if (null === $node) {
+        if (!$node instanceof DOMNode) {
             throw new LightSamlXmlException('Empty XML');
         }
 
@@ -51,18 +56,19 @@ abstract class Metadata extends AbstractSamlModel
         }
 
         $map = [
-            'EntityDescriptor' => '\LightSaml\Model\Metadata\EntityDescriptor',
-            'EntitiesDescriptor' => '\LightSaml\Model\Metadata\EntitiesDescriptor',
+            'EntityDescriptor' => EntityDescriptor::class,
+            'EntitiesDescriptor' => EntitiesDescriptor::class,
         ];
 
         $rootElementName = $node->localName;
 
         if (array_key_exists($rootElementName, $map)) {
-            if ($class = $map[$rootElementName]) {
+            $class = $map[$rootElementName];
+            if ($class !== '0') {
                 /** @var SamlElementInterface $result */
                 $result = new $class();
             } else {
-                throw new \LogicException('Deserialization of %s root element is not implemented');
+                throw new LogicException('Deserialization of %s root element is not implemented');
             }
         } else {
             throw new LightSamlXmlException(sprintf("Unknown SAML metadata '%s'", $rootElementName));

@@ -1,6 +1,6 @@
 <?php
 
-namespace LightSaml\Tests\Context\Profile;
+namespace Tests\Context\Profile;
 
 use LightSaml\Context\Profile\MessageContext;
 use LightSaml\Model\Protocol\AuthnRequest;
@@ -8,11 +8,12 @@ use LightSaml\Model\Protocol\LogoutRequest;
 use LightSaml\Model\Protocol\LogoutResponse;
 use LightSaml\Model\Protocol\Response;
 use LightSaml\Model\Protocol\SamlMessage;
-use LightSaml\Tests\BaseTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Tests\BaseTestCase;
 
 class MessageContextTest extends BaseTestCase
 {
-    public function message_as_concrete_type_provider()
+    public static function message_as_concrete_type_provider()
     {
         return [
             ['asAuthnRequest', true, new AuthnRequest()],
@@ -29,13 +30,11 @@ class MessageContextTest extends BaseTestCase
         ];
     }
 
-    /**
-     * @dataProvider message_as_concrete_type_provider
-     */
-    public function test_message_as_concrete_type($method, $hasValue, SamlMessage $message = null)
+    #[DataProvider('message_as_concrete_type_provider')]
+    public function test_message_as_concrete_type($method, $hasValue, ?SamlMessage $message = null)
     {
         $context = new MessageContext();
-        if ($message) {
+        if ($message instanceof SamlMessage) {
             $context->setMessage($message);
         }
 

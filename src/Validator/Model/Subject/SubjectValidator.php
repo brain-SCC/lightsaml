@@ -11,12 +11,8 @@ use LightSaml\Validator\Model\NameId\NameIdValidatorInterface;
 
 class SubjectValidator implements SubjectValidatorInterface
 {
-    /** @var NameIdValidatorInterface */
-    protected $nameIdValidator;
-
-    public function __construct(NameIdValidatorInterface $nameIdValidator)
+    public function __construct(protected NameIdValidatorInterface $nameIdValidator)
     {
-        $this->nameIdValidator = $nameIdValidator;
     }
 
     /**
@@ -27,8 +23,8 @@ class SubjectValidator implements SubjectValidatorInterface
     public function validateSubject(Subject $subject)
     {
         if (
-            false == $subject->getNameID() &&
-            false == $subject->getAllSubjectConfirmations()
+            false == $subject->getNameID()
+            && false == $subject->getAllSubjectConfirmations()
         ) {
             throw new LightSamlValidationException('Subject MUST contain either an identifier or a subject confirmation');
         }
@@ -43,7 +39,7 @@ class SubjectValidator implements SubjectValidatorInterface
     }
 
     /**
-     * @throws \LightSaml\Error\LightSamlValidationException
+     * @throws LightSamlValidationException
      */
     protected function validateSubjectConfirmation(SubjectConfirmation $subjectConfirmation)
     {
@@ -63,15 +59,13 @@ class SubjectValidator implements SubjectValidatorInterface
 
     protected function validateSubjectConfirmationData(SubjectConfirmationData $subjectConfirmationData)
     {
-        if ($subjectConfirmationData->getRecipient()) {
-            if (false == Helper::validateWellFormedUriString($subjectConfirmationData->getRecipient())) {
-                throw new LightSamlValidationException('Recipient of SubjectConfirmationData must be a wellformed absolute URI.');
-            }
+        if ($subjectConfirmationData->getRecipient() && false == Helper::validateWellFormedUriString($subjectConfirmationData->getRecipient())) {
+            throw new LightSamlValidationException('Recipient of SubjectConfirmationData must be a wellformed absolute URI.');
         }
         if (
-            $subjectConfirmationData->getNotBeforeTimestamp() &&
-            $subjectConfirmationData->getNotOnOrAfterTimestamp() &&
-            $subjectConfirmationData->getNotBeforeTimestamp() >= $subjectConfirmationData->getNotOnOrAfterTimestamp()
+            $subjectConfirmationData->getNotBeforeTimestamp()
+            && $subjectConfirmationData->getNotOnOrAfterTimestamp()
+            && $subjectConfirmationData->getNotBeforeTimestamp() >= $subjectConfirmationData->getNotOnOrAfterTimestamp()
         ) {
             throw new LightSamlValidationException('SubjectConfirmationData NotBefore MUST be less than NotOnOrAfter');
         }

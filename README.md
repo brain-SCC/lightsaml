@@ -10,6 +10,8 @@ We maintain this repo, with the latest changes from [litesaml/lightsaml](https:/
 
 ## Installation
 
+This package requires `php:^8.1`
+
 Install with composer.
 
 ```json
@@ -21,7 +23,7 @@ Install with composer.
         }
     ],
     "require": {
-        "brainscc/lightsaml": "~4.3.0"
+        "brainscc/lightsaml": "~4.5.0"
     }
 }
 ```

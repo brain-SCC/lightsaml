@@ -2,20 +2,17 @@
 
 namespace LightSaml\Resolver\Credential;
 
+use InvalidArgumentException;
 use LightSaml\Credential\CredentialInterface;
 use LightSaml\Criteria\CriteriaSet;
 
 class CredentialResolverQuery extends CriteriaSet
 {
-    /** @var CredentialResolverInterface */
-    private $resolver;
-
     /** @var CredentialInterface[] */
     private $arrCredentials;
 
-    public function __construct(CredentialResolverInterface $resolver)
+    public function __construct(private readonly CredentialResolverInterface $resolver)
     {
-        $this->resolver = $resolver;
     }
 
     /**
@@ -57,7 +54,7 @@ class CredentialResolverQuery extends CriteriaSet
                     $result[] = $credential;
                 }
             } else {
-                throw new \InvalidArgumentException('Expected CredentialInterface');
+                throw new InvalidArgumentException('Expected CredentialInterface');
             }
         }
 
@@ -77,7 +74,7 @@ class CredentialResolverQuery extends CriteriaSet
                     $result[] = $credential;
                 }
             } else {
-                throw new \InvalidArgumentException('Expected CredentialInterface');
+                throw new InvalidArgumentException('Expected CredentialInterface');
             }
         }
 

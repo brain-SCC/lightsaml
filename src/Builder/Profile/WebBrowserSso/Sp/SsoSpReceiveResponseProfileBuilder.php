@@ -2,6 +2,7 @@
 
 namespace LightSaml\Builder\Profile\WebBrowserSso\Sp;
 
+use LightSaml\Builder\Action\ActionBuilderInterface;
 use LightSaml\Builder\Action\Profile\SingleSignOn\Sp\SsoSpReceiveResponseActionBuilder;
 use LightSaml\Builder\Action\Profile\SingleSignOn\Sp\SsoSpValidateAssertionActionBuilder;
 use LightSaml\Builder\Profile\AbstractProfileBuilder;
@@ -27,15 +28,13 @@ class SsoSpReceiveResponseProfileBuilder extends AbstractProfileBuilder
     }
 
     /**
-     * @return \LightSaml\Builder\Action\ActionBuilderInterface
+     * @return ActionBuilderInterface
      */
     protected function getActionBuilder()
     {
-        $result = new SsoSpReceiveResponseActionBuilder(
+        return new SsoSpReceiveResponseActionBuilder(
             $this->container,
             new SsoSpValidateAssertionActionBuilder($this->container)
         );
-
-        return $result;
     }
 }

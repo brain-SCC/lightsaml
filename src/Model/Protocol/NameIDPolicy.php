@@ -2,6 +2,7 @@
 
 namespace LightSaml\Model\Protocol;
 
+use DOMNode;
 use LightSaml\Model\AbstractSamlModel;
 use LightSaml\Model\Context\DeserializationContext;
 use LightSaml\Model\Context\SerializationContext;
@@ -12,26 +13,14 @@ class NameIDPolicy extends AbstractSamlModel
     /**
      * @var string|null
      */
-    protected $format;
-
-    /**
-     * @var bool|null
-     */
-    protected $allowCreate;
-
-    /**
-     * @var string|null
-     */
     protected $spNameQualifier;
 
     /**
      * @param string $format
      * @param bool   $allowCreate
      */
-    public function __construct($format = null, $allowCreate = null)
+    public function __construct(protected $format = null, protected $allowCreate = null)
     {
-        $this->allowCreate = $allowCreate;
-        $this->format = $format;
     }
 
     /**
@@ -66,7 +55,7 @@ class NameIDPolicy extends AbstractSamlModel
     public function getAllowCreateString()
     {
         if (null === $this->allowCreate) {
-            return null;
+            return;
         }
 
         return $this->allowCreate ? 'true' : 'false';
@@ -115,14 +104,14 @@ class NameIDPolicy extends AbstractSamlModel
     /**
      * @return void
      */
-    public function serialize(\DOMNode $parent, SerializationContext $context)
+    public function serialize(DOMNode $parent, SerializationContext $context)
     {
         $result = $this->createElement('NameIDPolicy', SamlConstants::NS_PROTOCOL, $parent, $context);
 
         $this->attributesToXml(['Format', 'SPNameQualifier', 'AllowCreate'], $result);
     }
 
-    public function deserialize(\DOMNode $node, DeserializationContext $context)
+    public function deserialize(DOMNode $node, DeserializationContext $context)
     {
         $this->checkXmlNodeName($node, 'NameIDPolicy', SamlConstants::NS_PROTOCOL);
 

@@ -2,6 +2,7 @@
 
 namespace LightSaml\Model\Assertion;
 
+use DOMNode;
 use LightSaml\Error\LightSamlModelException;
 use LightSaml\Model\AbstractSamlModel;
 use LightSaml\Model\Context\DeserializationContext;
@@ -10,16 +11,6 @@ use LightSaml\SamlConstants;
 
 abstract class AbstractNameID extends AbstractSamlModel
 {
-    /**
-     * @var string
-     */
-    protected $value;
-
-    /**
-     * @var string|null
-     */
-    protected $format;
-
     /**
      * @var string|null
      */
@@ -39,10 +30,8 @@ abstract class AbstractNameID extends AbstractSamlModel
      * @param string $value
      * @param string $format
      */
-    public function __construct($value = null, $format = null)
+    public function __construct(protected $value = null, protected $format = null)
     {
-        $this->value = $value;
-        $this->format = $format;
     }
 
     /**
@@ -152,7 +141,7 @@ abstract class AbstractNameID extends AbstractSamlModel
         }
     }
 
-    public function serialize(\DOMNode $parent, SerializationContext $context)
+    public function serialize(DOMNode $parent, SerializationContext $context)
     {
         $this->prepareForXml();
         if (SamlConstants::NS_ASSERTION == $parent->namespaceURI) {
@@ -166,7 +155,7 @@ abstract class AbstractNameID extends AbstractSamlModel
         $result->nodeValue = $this->getValue();
     }
 
-    public function deserialize(\DOMNode $node, DeserializationContext $context)
+    public function deserialize(DOMNode $node, DeserializationContext $context)
     {
         $this->checkXmlNodeName($node, $this->getElementName(), SamlConstants::NS_ASSERTION);
 

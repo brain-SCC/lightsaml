@@ -10,12 +10,8 @@ use Psr\Log\LoggerInterface;
 
 abstract class AbstractAssertionAction implements ActionInterface
 {
-    /** @var LoggerInterface */
-    protected $logger;
-
-    public function __construct(LoggerInterface $logger)
+    public function __construct(protected LoggerInterface $logger)
     {
-        $this->logger = $logger;
     }
 
     public function execute(ContextInterface $context)

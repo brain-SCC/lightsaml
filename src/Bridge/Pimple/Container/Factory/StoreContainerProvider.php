@@ -10,14 +10,13 @@ use LightSaml\Store\Sso\SsoStateSessionStore;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
+/**
+ * @deprecated 5.0.0 No longer used by internal code and not recommended
+ */
 class StoreContainerProvider implements ServiceProviderInterface
 {
-    /** @var SystemContainerInterface */
-    private $systemContainer;
-
-    public function __construct(SystemContainerInterface $systemContainer)
+    public function __construct(private readonly SystemContainerInterface $systemContainer)
     {
-        $this->systemContainer = $systemContainer;
     }
 
     /**

@@ -1,17 +1,17 @@
 <?php
 
-namespace LightSaml\Tests\Functional\Provider\EntityDescriptor;
+namespace Tests\Functional\Provider\EntityDescriptor;
 
 use LightSaml\Model\Metadata\EntityDescriptor;
 use LightSaml\Provider\EntityDescriptor\FileEntityDescriptorProvider;
-use LightSaml\Tests\BaseTestCase;
+use Tests\BaseTestCase;
 
 class FileEntityDescriptorProviderTest extends BaseTestCase
 {
     public function test_loads_from_file()
     {
         $provider = new FileEntityDescriptorProvider(
-            __DIR__.'/../../../resources//idp-ed.xml'
+            __DIR__ . '/../../../resources//idp-ed.xml'
         );
 
         $entityDescriptor = $provider->get();

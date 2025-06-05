@@ -2,6 +2,9 @@
 
 namespace LightSaml\Resolver\Session;
 
+use DateTime;
+use DateTimeZone;
+use InvalidArgumentException;
 use LightSaml\Model\Assertion\Assertion;
 use LightSaml\Provider\TimeProvider\TimeProviderInterface;
 use LightSaml\State\Sso\SsoSessionState;
@@ -10,16 +13,8 @@ use LightSaml\Store\Sso\SsoStateStoreInterface;
 
 class SessionProcessor implements SessionProcessorInterface
 {
-    /** @var SsoStateStoreInterface */
-    protected $ssoStateStore;
-
-    /** @var TimeProviderInterface */
-    protected $timeProvider;
-
-    public function __construct(SsoStateStoreInterface $ssoStateStore, TimeProviderInterface $timeProvider)
+    public function __construct(protected SsoStateStoreInterface $ssoStateStore, protected TimeProviderInterface $timeProvider)
     {
-        $this->ssoStateStore = $ssoStateStore;
-        $this->timeProvider = $timeProvider;
     }
 
     /**
@@ -29,7 +24,7 @@ class SessionProcessor implements SessionProcessorInterface
      */
     public function processAssertions(array $assertions, $ownEntityId, $partyEntityId)
     {
-        $now = $this->timeProvider->getDateTime()->setTimezone(new \DateTimeZone('GMT'));
+        $now = $this->timeProvider->getDateTime()->setTimezone(new DateTimeZone('GMT'));
         $ssoState = $this->ssoStateStore->get();
 
         foreach ($assertions as $assertion) {
@@ -38,7 +33,7 @@ class SessionProcessor implements SessionProcessorInterface
                     $this->checkSession($ownEntityId, $partyEntityId, $ssoState, $assertion, $now);
                 }
             } else {
-                throw new \InvalidArgumentException('Expected Assertion');
+                throw new InvalidArgumentException('Expected Assertion');
             }
         }
 
@@ -51,17 +46,17 @@ class SessionProcessor implements SessionProcessorInterface
     protected function supportsSession(Assertion $assertion)
     {
         return
-            $assertion->hasBearerSubject() &&
-            null != $assertion->getSubject() &&
-            null != $assertion->getSubject()->getNameID()
-            ;
+            $assertion->hasBearerSubject()
+            && null != $assertion->getSubject()
+            && null != $assertion->getSubject()->getNameID()
+        ;
     }
 
     /**
      * @param string $ownEntityId
      * @param string $partyEntityId
      */
-    protected function checkSession($ownEntityId, $partyEntityId, SsoState $ssoState, Assertion $assertion, \DateTime $now)
+    protected function checkSession($ownEntityId, $partyEntityId, SsoState $ssoState, Assertion $assertion, DateTime $now)
     {
         $sessions = $this->filterSessions($ssoState, $assertion, $ownEntityId, $partyEntityId);
 
@@ -78,7 +73,7 @@ class SessionProcessor implements SessionProcessorInterface
      *
      * @return SsoSessionState
      */
-    protected function createSession(SsoState $ssoState, Assertion $assertion, \DateTime $now, $ownEntityId, $partyEntityId)
+    protected function createSession(SsoState $ssoState, Assertion $assertion, DateTime $now, $ownEntityId, $partyEntityId)
     {
         $ssoSession = new SsoSessionState();
         $ssoSession->setIdpEntityId($partyEntityId)
@@ -98,7 +93,7 @@ class SessionProcessor implements SessionProcessorInterface
     /**
      * @param SsoSessionState[] $sessions
      */
-    protected function updateLastAuthn(array $sessions, \DateTime $now)
+    protected function updateLastAuthn(array $sessions, DateTime $now)
     {
         foreach ($sessions as $session) {
             $session->setLastAuthOn($now);
@@ -109,7 +104,7 @@ class SessionProcessor implements SessionProcessorInterface
      * @param string $ownEntityId
      * @param string $partyEntityId
      *
-     * @return \LightSaml\State\Sso\SsoSessionState[]
+     * @return SsoSessionState[]
      */
     protected function filterSessions(SsoState $ssoState, Assertion $assertion, $ownEntityId, $partyEntityId)
     {

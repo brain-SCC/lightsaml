@@ -1,9 +1,9 @@
 <?php
 
-namespace LightSaml\Tests\Helper;
+namespace Tests\Helper;
 
 use LightSaml\Model\Metadata\ContactPerson;
-use LightSaml\Tests\BaseTestCase;
+use Tests\BaseTestCase;
 
 class ContactPersonChecker
 {
@@ -15,7 +15,7 @@ class ContactPersonChecker
         $surName,
         $email,
         $phone,
-        ContactPerson $contact = null
+        ?ContactPerson $contact = null
     ) {
         $test->assertNotNull($contact);
         $test->assertEquals($type, $contact->getContactType());

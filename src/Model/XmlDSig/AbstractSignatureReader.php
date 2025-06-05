@@ -2,6 +2,7 @@
 
 namespace LightSaml\Model\XmlDSig;
 
+use InvalidArgumentException;
 use LightSaml\Credential\CredentialInterface;
 use LightSaml\Credential\KeyHelper;
 use LightSaml\Error\LightSamlSecurityException;
@@ -15,7 +16,7 @@ abstract class AbstractSignatureReader extends Signature
     /**
      * @return bool True if validated, False if validation was not performed
      *
-     * @throws \LightSaml\Error\LightSamlSecurityException If validation fails
+     * @throws LightSamlSecurityException If validation fails
      */
     abstract public function validate(XMLSecurityKey $key);
 
@@ -30,8 +31,8 @@ abstract class AbstractSignatureReader extends Signature
     /**
      * @param CredentialInterface[] $credentialCandidates
      *
-     * @throws \InvalidArgumentException                   If element of $credentialCandidates array is not CredentialInterface
-     * @throws \LightSaml\Error\LightSamlSecurityException If validation fails
+     * @throws InvalidArgumentException   If element of $credentialCandidates array is not CredentialInterface
+     * @throws LightSamlSecurityException If validation fails
      *
      * @return CredentialInterface|null Returns credential that validated the signature or null if validation was not performed
      */
@@ -41,7 +42,7 @@ abstract class AbstractSignatureReader extends Signature
 
         foreach ($credentialCandidates as $credential) {
             if (false == $credential instanceof CredentialInterface) {
-                throw new \InvalidArgumentException('Expected CredentialInterface');
+                throw new InvalidArgumentException('Expected CredentialInterface');
             }
             if (null == $credential->getPublicKey()) {
                 continue;
@@ -51,7 +52,7 @@ abstract class AbstractSignatureReader extends Signature
                 $result = $this->validate($credential->getPublicKey());
 
                 if (false === $result) {
-                    return null;
+                    return;
                 }
 
                 return $credential;
@@ -60,7 +61,7 @@ abstract class AbstractSignatureReader extends Signature
             }
         }
 
-        if ($lastException) {
+        if ($lastException instanceof LightSamlSecurityException) {
             throw $lastException;
         } else {
             throw new LightSamlSecurityException('No public key available for signature verification');
@@ -88,7 +89,7 @@ abstract class AbstractSignatureReader extends Signature
                 XMLSecurityKey::SHA224_RSA_MGF1,
                 XMLSecurityKey::SHA256_RSA_MGF1,
                 XMLSecurityKey::SHA512_RSA_MGF1,
-            ])
+            ], true)
         ) {
             throw new LightSamlSecurityException(sprintf('Unsupported signing algorithm: "%s"', $algorithm));
         }

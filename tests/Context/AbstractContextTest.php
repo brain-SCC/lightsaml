@@ -1,13 +1,15 @@
 <?php
 
-namespace LightSaml\Tests\Context;
+namespace Tests\Context;
 
+use InvalidArgumentException;
 use LightSaml\Context\AbstractContext;
 use LightSaml\Context\Profile\AssertionContext;
 use LightSaml\Context\Profile\EntityContext;
 use LightSaml\Context\Profile\ProfileContext;
 use LightSaml\Context\Profile\RequestStateContext;
-use LightSaml\Tests\BaseTestCase;
+use PHPUnit\Framework\MockObject\MockObject;
+use Tests\BaseTestCase;
 
 class AbstractContextTest extends BaseTestCase
 {
@@ -74,7 +76,7 @@ class AbstractContextTest extends BaseTestCase
     public function test_add_sub_context_throws_if_not_a_context_value()
     {
         $this->expectExceptionMessage("Expected object or ContextInterface");
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $context = $this->getContextMock();
         $context->addSubContext($name = 'some', '123');
         $context->getSubContext($name);
@@ -91,7 +93,7 @@ class AbstractContextTest extends BaseTestCase
     public function test__created_sub_context_has_set_parent()
     {
         $context = $this->getContextMock();
-        $subContext = $context->getSubContext($name = 'name', get_class($context));
+        $subContext = $context->getSubContext($name = 'name', $context::class);
 
         $this->assertSame($context, $subContext->getParent());
     }
@@ -146,7 +148,7 @@ class AbstractContextTest extends BaseTestCase
     {
         $context = $this->getContextMock();
 
-        $context->getSubContext($name = 'name', get_class($context));
+        $context->getSubContext($name = 'name', $context::class);
 
         $this->assertTrue($context->containsSubContext($name));
     }
@@ -160,9 +162,9 @@ class AbstractContextTest extends BaseTestCase
     public function test_get_path_string_returns_value()
     {
         $context = $this->getContextMock();
-        $fooContext = $context->getSubContext('foo', get_class($context));
-        $barContext = $fooContext->getSubContext('bar', get_class($context));
-        $expectedValue = $barContext->getSubContext('value', get_class($context));
+        $fooContext = $context->getSubContext('foo', $context::class);
+        $barContext = $fooContext->getSubContext('bar', $context::class);
+        $expectedValue = $barContext->getSubContext('value', $context::class);
 
         $this->assertSame($expectedValue, $context->getPath('foo/bar/value'));
     }
@@ -170,9 +172,9 @@ class AbstractContextTest extends BaseTestCase
     public function test_get_path_returns_null_for_non_existing_path()
     {
         $context = $this->getContextMock();
-        $fooContext = $context->getSubContext('foo', get_class($context));
-        $barContext = $fooContext->getSubContext('bar', get_class($context));
-        $barContext->getSubContext('value', get_class($context));
+        $fooContext = $context->getSubContext('foo', $context::class);
+        $barContext = $fooContext->getSubContext('bar', $context::class);
+        $barContext->getSubContext('value', $context::class);
 
         $this->assertNull($context->getPath('foo/non-existing/value'));
     }
@@ -180,9 +182,9 @@ class AbstractContextTest extends BaseTestCase
     public function test_get_path_string_returns_null_for_too_deep_path()
     {
         $context = $this->getContextMock();
-        $fooContext = $context->getSubContext('foo', get_class($context));
-        $barContext = $fooContext->getSubContext('bar', get_class($context));
-        $barContext->getSubContext('value', get_class($context));
+        $fooContext = $context->getSubContext('foo', $context::class);
+        $barContext = $fooContext->getSubContext('bar', $context::class);
+        $barContext->getSubContext('value', $context::class);
 
         $this->assertNull($context->getPath('foo/bar/value/too-much'));
     }
@@ -239,7 +241,7 @@ EOT;
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|AbstractContext
+     * @return MockObject|AbstractContext
      */
     private function getContextMock()
     {

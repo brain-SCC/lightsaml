@@ -2,11 +2,13 @@
 
 namespace LightSaml\Model\XmlDSig;
 
+use DOMNode;
 use LightSaml\Credential\X509Certificate;
 use LightSaml\Meta\SigningOptions;
 use LightSaml\Model\Context\DeserializationContext;
 use LightSaml\Model\Context\SerializationContext;
 use LightSaml\SamlConstants;
+use LogicException;
 use RobRichards\XMLSecLibs\XMLSecurityDSig;
 use RobRichards\XMLSecLibs\XMLSecurityKey;
 
@@ -14,14 +16,6 @@ class SignatureWriter extends Signature
 {
     /** @var string */
     protected $canonicalMethod = XMLSecurityDSig::EXC_C14N;
-
-    /** @var XMLSecurityKey */
-    protected $xmlSecurityKey;
-
-    /** @var X509Certificate */
-    protected $certificate;
-
-    protected $digestAlgorithm = XMLSecurityDSig::SHA1;
 
     /** @var SigningOptions */
     protected $signingOptions;
@@ -50,11 +44,8 @@ class SignatureWriter extends Signature
     /**
      * @param string $digestAlgorithm
      */
-    public function __construct(X509Certificate $certificate = null, XMLSecurityKey $xmlSecurityKey = null, $digestAlgorithm = XMLSecurityDSig::SHA1)
+    public function __construct(protected ?X509Certificate $certificate = null, protected ?XMLSecurityKey $xmlSecurityKey = null, protected $digestAlgorithm = XMLSecurityDSig::SHA1)
     {
-        $this->certificate = $certificate;
-        $this->xmlSecurityKey = $xmlSecurityKey;
-        $this->digestAlgorithm = $digestAlgorithm;
     }
 
     /**
@@ -151,7 +142,7 @@ class SignatureWriter extends Signature
         return $this->certificate;
     }
 
-    public function serialize(\DOMNode $parent, SerializationContext $context)
+    public function serialize(DOMNode $parent, SerializationContext $context)
     {
         if ($this->signingOptions && false === $this->signingOptions->isEnabled()) {
             return;
@@ -185,8 +176,8 @@ class SignatureWriter extends Signature
         $objXMLSecDSig->insertSignature($parent, $firstChild);
     }
 
-    public function deserialize(\DOMNode $node, DeserializationContext $context)
+    public function deserialize(DOMNode $node, DeserializationContext $context): never
     {
-        throw new \LogicException('SignatureWriter can not be deserialized');
+        throw new LogicException('SignatureWriter can not be deserialized');
     }
 }

@@ -2,18 +2,13 @@
 
 namespace LightSaml\Model\Metadata;
 
+use DOMNode;
 use LightSaml\Model\AbstractSamlModel;
 use LightSaml\Model\Context\DeserializationContext;
 use LightSaml\Model\Context\SerializationContext;
 
 abstract class Endpoint extends AbstractSamlModel
 {
-    /** @var string */
-    protected $binding;
-
-    /** @var string */
-    protected $location;
-
     /** @var string|null */
     protected $responseLocation;
 
@@ -21,10 +16,8 @@ abstract class Endpoint extends AbstractSamlModel
      * @param string $location
      * @param string $binding
      */
-    public function __construct($location = null, $binding = null)
+    public function __construct(protected $location = null, protected $binding = null)
     {
-        $this->location = $location;
-        $this->binding = $binding;
     }
 
     /**
@@ -87,12 +80,12 @@ abstract class Endpoint extends AbstractSamlModel
         return $this->responseLocation;
     }
 
-    public function serialize(\DOMNode $parent, SerializationContext $context)
+    public function serialize(DOMNode $parent, SerializationContext $context)
     {
         $this->attributesToXml(['Binding', 'Location', 'ResponseLocation'], $parent);
     }
 
-    public function deserialize(\DOMNode $node, DeserializationContext $context)
+    public function deserialize(DOMNode $node, DeserializationContext $context)
     {
         $this->attributesFromXml($node, ['Binding', 'Location', 'ResponseLocation']);
     }

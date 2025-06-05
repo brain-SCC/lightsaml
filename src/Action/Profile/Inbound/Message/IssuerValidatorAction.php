@@ -13,21 +13,12 @@ use Psr\Log\LoggerInterface;
 
 class IssuerValidatorAction extends AbstractProfileAction
 {
-    /** @var NameIdValidatorInterface */
-    protected $nameIdValidator;
-
-    /** @var string */
-    protected $allowedFormat;
-
     /**
      * @param string $allowedFormat
      */
-    public function __construct(LoggerInterface $logger, NameIdValidatorInterface $nameIdValidator, $allowedFormat)
+    public function __construct(LoggerInterface $logger, protected NameIdValidatorInterface $nameIdValidator, protected $allowedFormat)
     {
         parent::__construct($logger);
-
-        $this->nameIdValidator = $nameIdValidator;
-        $this->allowedFormat = $allowedFormat;
     }
 
     /**
@@ -44,10 +35,10 @@ class IssuerValidatorAction extends AbstractProfileAction
         }
 
         if (
-            $this->allowedFormat &&
-            $message->getIssuer()->getValue() &&
-            $message->getIssuer()->getFormat() &&
-            $message->getIssuer()->getFormat() != $this->allowedFormat
+            $this->allowedFormat
+            && $message->getIssuer()->getValue()
+            && $message->getIssuer()->getFormat()
+            && $message->getIssuer()->getFormat() != $this->allowedFormat
         ) {
             $message = sprintf(
                 "Response Issuer Format if set must have value '%s' but it was '%s'",

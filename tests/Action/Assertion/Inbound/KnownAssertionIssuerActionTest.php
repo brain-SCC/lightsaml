@@ -1,11 +1,12 @@
 <?php
 
-namespace LightSaml\Tests\Action\Assertion\Inbound;
+namespace Tests\Action\Assertion\Inbound;
 
 use LightSaml\Action\Assertion\Inbound\KnownAssertionIssuerAction;
+use LightSaml\Error\LightSamlContextException;
 use LightSaml\Model\Assertion\Assertion;
 use LightSaml\Model\Assertion\Issuer;
-use LightSaml\Tests\BaseTestCase;
+use Tests\BaseTestCase;
 
 class KnownAssertionIssuerActionTest extends BaseTestCase
 {
@@ -28,7 +29,7 @@ class KnownAssertionIssuerActionTest extends BaseTestCase
             ->method('error')
             ->with('Assertion element must have an issuer element');
 
-        $this->expectException(\LightSaml\Error\LightSamlContextException::class);
+        $this->expectException(LightSamlContextException::class);
         $this->expectExceptionMessage("Assertion element must have an issuer element");
 
         $action->execute($context);
@@ -55,7 +56,7 @@ class KnownAssertionIssuerActionTest extends BaseTestCase
             ->with("Unknown issuer 'http://issuer.com'");
 
         $this->expectExceptionMessage("Unknown issuer 'http://issuer.com'");
-        $this->expectException(\LightSaml\Error\LightSamlContextException::class);
+        $this->expectException(LightSamlContextException::class);
 
         $action->execute($context);
     }

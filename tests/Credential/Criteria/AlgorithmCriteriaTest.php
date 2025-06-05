@@ -1,11 +1,11 @@
 <?php
 
-namespace LightSaml\Tests\Credential\Criteria;
+namespace Tests\Credential\Criteria;
 
 use LightSaml\Credential\Criteria\AlgorithmCriteria;
 use LightSaml\Credential\Criteria\TrustCriteriaInterface;
-use LightSaml\Tests\BaseTestCase;
 use RobRichards\XMLSecLibs\XMLSecurityKey;
+use Tests\BaseTestCase;
 
 class AlgorithmCriteriaTest extends BaseTestCase
 {

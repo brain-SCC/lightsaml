@@ -2,21 +2,19 @@
 
 namespace LightSaml\Context\Profile;
 
+use Exception;
+
 class ExceptionContext extends AbstractProfileContext
 {
-    /** @var \Exception */
-    protected $exception;
-
     /** @var ExceptionContext|null */
     protected $nextExceptionContext;
 
-    public function __construct(\Exception $exception = null)
+    public function __construct(protected ?Exception $exception = null)
     {
-        $this->exception = $exception;
     }
 
     /**
-     * @return \Exception
+     * @return Exception
      */
     public function getException()
     {
@@ -24,7 +22,7 @@ class ExceptionContext extends AbstractProfileContext
     }
 
     /**
-     * @return \Exception|null
+     * @return Exception|null
      */
     public function getLastException()
     {
@@ -46,7 +44,7 @@ class ExceptionContext extends AbstractProfileContext
     /**
      * @return ExceptionContext
      */
-    public function addException(\Exception $exception)
+    public function addException(Exception $exception)
     {
         if ($this->exception) {
             if (null == $this->nextExceptionContext) {

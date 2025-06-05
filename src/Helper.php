@@ -2,6 +2,11 @@
 
 namespace LightSaml;
 
+use DateInterval;
+use DateTime;
+use Exception;
+use InvalidArgumentException;
+
 final class Helper
 {
     public const TIME_FORMAT = 'Y-m-d\TH:i:s\Z';
@@ -13,40 +18,38 @@ final class Helper
     {
         if ($duration) {
             try {
-                new \DateInterval((string) $duration);
-            } catch (\Exception $ex) {
-                throw new \InvalidArgumentException(sprintf("Invalid duration '%s' format", $duration), 0, $ex);
+                new DateInterval((string) $duration);
+            } catch (Exception $ex) {
+                throw new InvalidArgumentException(sprintf("Invalid duration '%s' format", $duration), 0, $ex);
             }
         }
     }
 
     /**
      * @param int $time
-     *
-     * @return string
      */
-    public static function time2string($time)
+    public static function time2string($time): string
     {
         return gmdate('Y-m-d\TH:i:s\Z', $time);
     }
 
     /**
-     * @param int|string|\DateTime $value
+     * @param int|string|DateTime $value
      *
      * @return int
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public static function getTimestampFromValue($value)
     {
         if (is_string($value)) {
             return self::parseSAMLTime($value);
-        } elseif ($value instanceof \DateTime) {
+        } elseif ($value instanceof DateTime) {
             return $value->getTimestamp();
         } elseif (is_int($value)) {
             return $value;
         } else {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
     }
 
@@ -55,9 +58,9 @@ final class Helper
      *
      * @return int
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
-    public static function parseSAMLTime($time)
+    public static function parseSAMLTime($time): int|false
     {
         $matches = [];
         if (
@@ -67,7 +70,7 @@ final class Helper
                 $matches
             )
         ) {
-            throw new \InvalidArgumentException('Invalid SAML2 timestamp: ' . $time);
+            throw new InvalidArgumentException('Invalid SAML2 timestamp: ' . $time);
         }
 
         return strtotime($time);
@@ -76,15 +79,13 @@ final class Helper
     /**
      * @param int $length
      *
-     * @return string
-     *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
-    public static function generateRandomBytes($length)
+    public static function generateRandomBytes($length): string
     {
         $length = intval($length);
         if ($length <= 0) {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
 
         return random_bytes($length);
@@ -92,10 +93,8 @@ final class Helper
 
     /**
      * @param string $bytes
-     *
-     * @return string
      */
-    public static function stringToHex($bytes)
+    public static function stringToHex($bytes): string
     {
         return bin2hex($bytes);
     }
@@ -147,8 +146,13 @@ final class Helper
      */
     public static function validateWellFormedUriString($value)
     {
-        $value = trim((string)$value);
-        if ('' == $value || strlen($value) > 65520) {
+        if (is_null($value)) {
+            return false;
+        }
+
+        $value = trim($value);
+
+        if ('' === $value || strlen($value) > 65520) {
             return false;
         }
 
@@ -158,7 +162,7 @@ final class Helper
 
         $parts = parse_url($value);
         if (isset($parts['scheme'])) {
-            if ($parts['scheme'] != rawurlencode($parts['scheme'])) {
+            if ($parts['scheme'] !== rawurlencode($parts['scheme'])) {
                 return false;
             }
         } else {
@@ -169,6 +173,8 @@ final class Helper
     }
 
     /**
+     * Returns `true` when `$now` is on or after `$notBefore`.
+     *
      * @param int $notBefore
      * @param int $now
      * @param int $allowedSecondsSkew
@@ -177,7 +183,7 @@ final class Helper
      */
     public static function validateNotBefore($notBefore, $now, $allowedSecondsSkew)
     {
-        return null == $notBefore || (($notBefore - $allowedSecondsSkew) < $now);
+        return null == $notBefore || (($notBefore - $allowedSecondsSkew) <= $now);
     }
 
     /**

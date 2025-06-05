@@ -2,6 +2,7 @@
 
 namespace LightSaml\Model\Protocol;
 
+use DOMNode;
 use LightSaml\Model\AbstractSamlModel;
 use LightSaml\Model\Context\DeserializationContext;
 use LightSaml\Model\Context\SerializationContext;
@@ -9,19 +10,11 @@ use LightSaml\SamlConstants;
 
 class Status extends AbstractSamlModel
 {
-    /** @var StatusCode */
-    protected $statusCode;
-
-    /** @var string|null */
-    protected $statusMessage;
-
     /**
-     * @param string $message
+     * @param string $statusMessage
      */
-    public function __construct(StatusCode $statusCode = null, $message = null)
+    public function __construct(protected ?StatusCode $statusCode = null, protected $statusMessage = null)
     {
-        $this->statusCode = $statusCode;
-        $this->statusMessage = $message;
     }
 
     /**
@@ -63,9 +56,7 @@ class Status extends AbstractSamlModel
      */
     public function isSuccess()
     {
-        $result = $this->getStatusCode() && SamlConstants::STATUS_SUCCESS == $this->getStatusCode()->getValue();
-
-        return $result;
+        return $this->getStatusCode() && SamlConstants::STATUS_SUCCESS == $this->getStatusCode()->getValue();
     }
 
     /**
@@ -82,19 +73,19 @@ class Status extends AbstractSamlModel
     /**
      * @return void
      */
-    public function serialize(\DOMNode $parent, SerializationContext $context)
+    public function serialize(DOMNode $parent, SerializationContext $context)
     {
         $result = $this->createElement('samlp:Status', SamlConstants::NS_PROTOCOL, $parent, $context);
 
         $this->singleElementsToXml(['StatusCode', 'StatusMessage'], $result, $context, SamlConstants::NS_PROTOCOL);
     }
 
-    public function deserialize(\DOMNode $node, DeserializationContext $context)
+    public function deserialize(DOMNode $node, DeserializationContext $context)
     {
         $this->checkXmlNodeName($node, 'Status', SamlConstants::NS_PROTOCOL);
 
         $this->singleElementsFromXml($node, $context, [
-            'StatusCode' => ['samlp', 'LightSaml\Model\Protocol\StatusCode'],
+            'StatusCode' => ['samlp', StatusCode::class],
             'StatusMessage' => ['samlp', null],
         ]);
     }

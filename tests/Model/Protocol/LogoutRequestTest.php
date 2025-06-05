@@ -1,13 +1,14 @@
 <?php
 
-namespace LightSaml\Tests\Model\Protocol;
+namespace Tests\Model\Protocol;
 
-use LightSaml\Model\Context\SerializationContext;
+use DateTime;
 use LightSaml\Model\Assertion\Issuer;
 use LightSaml\Model\Assertion\NameID;
+use LightSaml\Model\Context\SerializationContext;
 use LightSaml\Model\Protocol\LogoutRequest;
 use LightSaml\SamlConstants;
-use LightSaml\Tests\BaseTestCase;
+use Tests\BaseTestCase;
 
 class LogoutRequestTest extends BaseTestCase
 {
@@ -16,9 +17,9 @@ class LogoutRequestTest extends BaseTestCase
         $context = new SerializationContext();
         $request = new LogoutRequest();
         $request->setID('request-id')
-            ->setIssueInstant(new \DateTime('2013-12-08T17:08:35Z'))
+            ->setIssueInstant(new DateTime('2013-12-08T17:08:35Z'))
             ->setDestination('http://idp.com/saml/logout')
-            ->setNotOnOrAfter(new \DateTime('2013-12-08T17:10:00Z'))
+            ->setNotOnOrAfter(new DateTime('2013-12-08T17:10:00Z'))
             ->setIssuer((new Issuer())
                 ->setValue('the-issuer'))
             ->setNameID((new NameID())

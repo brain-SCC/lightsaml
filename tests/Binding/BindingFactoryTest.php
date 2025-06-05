@@ -1,12 +1,16 @@
 <?php
 
-namespace LightSaml\Tests\Binding;
+namespace Tests\Binding;
 
 use LightSaml\Binding\BindingFactory;
+use LightSaml\Binding\HttpPostBinding;
+use LightSaml\Binding\HttpRedirectBinding;
+use LightSaml\Error\LightSamlBindingException;
 use LightSaml\SamlConstants;
-use LightSaml\Tests\BaseTestCase;
+use LogicException;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Tests\BaseTestCase;
 
 class BindingFactoryTest extends BaseTestCase
 {
@@ -14,20 +18,20 @@ class BindingFactoryTest extends BaseTestCase
     {
         $factory = new BindingFactory();
         $binding = $factory->create(SamlConstants::BINDING_SAML2_HTTP_REDIRECT);
-        $this->assertInstanceOf('LightSaml\Binding\HttpRedirectBinding', $binding);
+        $this->assertInstanceOf(HttpRedirectBinding::class, $binding);
     }
 
     public function test__create_http_post()
     {
         $factory = new BindingFactory();
         $binding = $factory->create(SamlConstants::BINDING_SAML2_HTTP_POST);
-        $this->assertInstanceOf('LightSaml\Binding\HttpPostBinding', $binding);
+        $this->assertInstanceOf(HttpPostBinding::class, $binding);
     }
 
     public function test__create_throws_not_implemented_error_for_soap()
     {
         $this->expectExceptionMessage("SOAP binding not implemented");
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $factory = new BindingFactory();
         $factory->create(SamlConstants::BINDING_SAML2_SOAP);
     }
@@ -35,7 +39,7 @@ class BindingFactoryTest extends BaseTestCase
     public function test__create_throws_not_implemented_error_for_artifact()
     {
         $this->expectExceptionMessage("Artifact binding not implemented");
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $factory = new BindingFactory();
         $factory->create(SamlConstants::BINDING_SAML2_HTTP_ARTIFACT);
     }
@@ -43,7 +47,7 @@ class BindingFactoryTest extends BaseTestCase
     public function test__create_throws_for_unknown_binding()
     {
         $this->expectExceptionMessage("Unknown binding type 'foo'");
-        $this->expectException(\LightSaml\Error\LightSamlBindingException::class);
+        $this->expectException(LightSamlBindingException::class);
         $factory = new BindingFactory();
         $factory->create('foo');
     }
@@ -117,14 +121,14 @@ class BindingFactoryTest extends BaseTestCase
     {
         $request = $this->createHttpRedirectRequest();
         $factory = new BindingFactory();
-        $this->assertInstanceOf('LightSaml\Binding\HttpRedirectBinding', $factory->getBindingByRequest($request));
+        $this->assertInstanceOf(HttpRedirectBinding::class, $factory->getBindingByRequest($request));
     }
 
     public function test__get_binding_by_request_http_post()
     {
         $request = $this->createHttpPostRequest();
         $factory = new BindingFactory();
-        $this->assertInstanceOf('LightSaml\Binding\HttpPostBinding', $factory->getBindingByRequest($request));
+        $this->assertInstanceOf(HttpPostBinding::class, $factory->getBindingByRequest($request));
     }
 
     public function test__create_with_event_dispatcher()
@@ -133,7 +137,7 @@ class BindingFactoryTest extends BaseTestCase
 
         $factory = new BindingFactory($eventDispatcher);
         $binding = $factory->create(SamlConstants::BINDING_SAML2_HTTP_REDIRECT);
-        $this->assertInstanceOf('LightSaml\Binding\HttpRedirectBinding', $binding);
+        $this->assertInstanceOf(HttpRedirectBinding::class, $binding);
         $this->assertEquals($eventDispatcher, $binding->getEventDispatcher());
     }
 
@@ -143,7 +147,7 @@ class BindingFactoryTest extends BaseTestCase
     private function createHttpPostRequest()
     {
         $request = new Request();
-        $request->request->add(array('SAMLRequest' => 'request'));
+        $request->request->add(['SAMLRequest' => 'request']);
         $request->setMethod('POST');
 
         return $request;
@@ -155,7 +159,7 @@ class BindingFactoryTest extends BaseTestCase
     private function createHttpRedirectRequest()
     {
         $request = new Request();
-        $request->query->add(array('SAMLRequest' => 'request'));
+        $request->query->add(['SAMLRequest' => 'request']);
         $request->setMethod('GET');
 
         return $request;
@@ -167,7 +171,7 @@ class BindingFactoryTest extends BaseTestCase
     private function createArtifactPostRequest()
     {
         $request = new Request();
-        $request->request->add(array('SAMLart' => 'request'));
+        $request->request->add(['SAMLart' => 'request']);
         $request->setMethod('POST');
 
         return $request;
@@ -179,7 +183,7 @@ class BindingFactoryTest extends BaseTestCase
     private function createArtifactGetRequest()
     {
         $request = new Request();
-        $request->query->add(array('SAMLart' => 'request'));
+        $request->query->add(['SAMLart' => 'request']);
         $request->setMethod('GET');
 
         return $request;
@@ -192,7 +196,7 @@ class BindingFactoryTest extends BaseTestCase
     {
         $request = new Request();
         $request->setMethod('POST');
-        $request->headers->add(array('CONTENT_TYPE' => 'text/xml; charset=utf-8'));
+        $request->headers->add(['CONTENT_TYPE' => 'text/xml; charset=utf-8']);
 
         return $request;
     }

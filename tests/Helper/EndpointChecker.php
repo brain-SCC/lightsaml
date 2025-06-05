@@ -1,13 +1,13 @@
 <?php
 
-namespace LightSaml\Tests\Helper;
+namespace Tests\Helper;
 
 use LightSaml\Model\Metadata\Endpoint;
-use LightSaml\Tests\BaseTestCase;
+use Tests\BaseTestCase;
 
 class EndpointChecker
 {
-    public static function check(BaseTestCase $test, $binding, $location, Endpoint $svc = null)
+    public static function check(BaseTestCase $test, $binding, $location, ?Endpoint $svc = null)
     {
         $test->assertNotNull($svc);
         $test->assertEquals($binding, $svc->getBinding());

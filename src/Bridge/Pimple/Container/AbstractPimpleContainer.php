@@ -4,14 +4,13 @@ namespace LightSaml\Bridge\Pimple\Container;
 
 use Pimple\Container;
 
+/**
+ * @deprecated 5.0.0 No longer used by internal code and not recommended
+ */
 abstract class AbstractPimpleContainer
 {
-    /** @var Container */
-    protected $pimple;
-
-    public function __construct(Container $pimple)
+    public function __construct(protected Container $pimple)
     {
-        $this->pimple = $pimple;
     }
 
     /**

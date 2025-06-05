@@ -1,10 +1,12 @@
 <?php
 
-namespace LightSaml\Tests\State\Sso;
+namespace Tests\State\Sso;
 
+use DateTime;
 use LightSaml\Meta\ParameterBag;
 use LightSaml\State\Sso\SsoSessionState;
-use LightSaml\Tests\BaseTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Tests\BaseTestCase;
 
 class SsoSessionStateTest extends BaseTestCase
 {
@@ -14,7 +16,7 @@ class SsoSessionStateTest extends BaseTestCase
         $this->assertTrue(true);
     }
 
-    public function property_getter_setter_provider()
+    public static function property_getter_setter_provider()
     {
         return [
             ['IdpEntityId'],
@@ -22,18 +24,18 @@ class SsoSessionStateTest extends BaseTestCase
             ['NameId'],
             ['NameIdFormat'],
             ['SessionIndex'],
-            ['FirstAuthOn', new \DateTime('2015-10-27 08:00:00')],
-            ['LastAuthOn', new \DateTime('2015-10-27 10:00:00')],
-            ['SessionInstant', new \DateTime('2015-10-27 06:00:00')],
+            ['FirstAuthOn', new DateTime('2015-10-27 08:00:00')],
+            ['LastAuthOn', new DateTime('2015-10-27 10:00:00')],
+            ['SessionInstant', new DateTime('2015-10-27 06:00:00')],
         ];
     }
 
     /**
-     * @dataProvider  property_getter_setter_provider
      *
      * @param string $property
      * @param string $value
      */
+    #[DataProvider('property_getter_setter_provider')]
     public function test_property_getter_setter($property, $value = 'some.value')
     {
         $state = new SsoSessionState();
@@ -52,9 +54,9 @@ class SsoSessionStateTest extends BaseTestCase
             ->setNameId($nameId = 'name.id')
             ->setNameIdFormat($nameIdFormat = 'name.id.format')
             ->setSessionIndex($sessionIndex = 'session.index')
-            ->setFirstAuthOn($firstAuthOn = new \DateTime('2015-10-27 08:00:00'))
-            ->setLastAuthOn($lastAuthOn = new \DateTime('2015-10-27 10:00:00'))
-            ->setSessionInstant($sessionInstant = new \DateTime('2015-10-27 06:00:00'))
+            ->setFirstAuthOn($firstAuthOn = new DateTime('2015-10-27 08:00:00'))
+            ->setLastAuthOn($lastAuthOn = new DateTime('2015-10-27 10:00:00'))
+            ->setSessionInstant($sessionInstant = new DateTime('2015-10-27 06:00:00'))
         ;
         $data = $state->serialize();
 
@@ -78,7 +80,7 @@ class SsoSessionStateTest extends BaseTestCase
         $values = [
             'a' => 1,
             'bbb' => 'bbbbbbb',
-            'ccccccccccc' => new \DateTime('2015-10-22 12:13:14')
+            'ccccccccccc' => new DateTime('2015-10-22 12:13:14')
         ];
         foreach ($values as $k => $v) {
             $state->addOption($k, $v);
@@ -93,10 +95,10 @@ class SsoSessionStateTest extends BaseTestCase
 
         $state->addOption('aaa', 123);
         $state->addOption('b', 'bbbbb');
-        $this->assertEquals(['aaa'=>123, 'b'=>'bbbbb'], $state->getOptions());
+        $this->assertEquals(['aaa' => 123, 'b' => 'bbbbb'], $state->getOptions());
 
         $state->removeOption('aaa');
-        $this->assertEquals(['b'=>'bbbbb'], $state->getOptions());
+        $this->assertEquals(['b' => 'bbbbb'], $state->getOptions());
     }
 
     /**
