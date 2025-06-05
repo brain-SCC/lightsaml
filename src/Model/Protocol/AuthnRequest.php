@@ -53,6 +53,11 @@ class AuthnRequest extends AbstractRequest
     private $extensions;
 
     /**
+     * @var RequestedAuthnContext|null
+     */
+    private $requestedAuthnContext;
+
+    /**
      * @param Subject|null $subject
      *
      * @return AuthnRequest
