@@ -2,10 +2,9 @@
 
 namespace LightSaml\Model\Protocol;
 
+use DOMNode;
 use LightSaml\Model\Context\CDataContext;
 use LightSaml\Model\Context\SerializationContext;
-use LightSaml\Model\SamlElementInterface;
-use LightSaml\SamlConstants;
 
 abstract class AbstractExtension extends SamlMessage
 {
@@ -42,10 +41,9 @@ abstract class AbstractExtension extends SamlMessage
         return $this->namespace;
     }
 
-
     /**
-     * @param string $name
      * @param bool|string $value
+     *
      * @return $this
      */
     public function addAttribute(string $name, $value): self
@@ -62,6 +60,7 @@ abstract class AbstractExtension extends SamlMessage
 
     /**
      * @param self|string|CDataContext $element
+     *
      * @return $this
      */
     public function addElement($element): self
@@ -71,7 +70,7 @@ abstract class AbstractExtension extends SamlMessage
         return $this;
     }
 
-    public function serialize(\DOMNode $parent, SerializationContext $context)
+    public function serialize(DOMNode $parent, SerializationContext $context)
     {
         $result = $this->createElement($this->name, $this->namespace, $parent, $context);
 

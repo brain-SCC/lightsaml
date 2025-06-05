@@ -163,6 +163,7 @@ class X509Certificate
                                     throw new LightSamlSecurityException('Unrecognized hash algorithm: ' . $match[1]);
                             }
                         }
+                        // no break
                     default:
                         throw new LightSamlSecurityException('Unrecognized signature algorithm: ' . $match[1]);
                 }

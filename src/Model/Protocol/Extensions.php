@@ -2,6 +2,7 @@
 
 namespace LightSaml\Model\Protocol;
 
+use DOMNode;
 use LightSaml\Model\AbstractSamlModel;
 use LightSaml\Model\Context\DeserializationContext;
 use LightSaml\Model\Context\SerializationContext;
@@ -35,7 +36,7 @@ class Extensions extends AbstractSamlModel
     /**
      * @return void
      */
-    public function serialize(\DOMNode $parent, SerializationContext $context)
+    public function serialize(DOMNode $parent, SerializationContext $context)
     {
         $result = $this->createElement('Extensions', SamlConstants::NS_PROTOCOL, $parent, $context);
 
@@ -44,7 +45,7 @@ class Extensions extends AbstractSamlModel
         }
     }
 
-    public function deserialize(\DOMNode $node, DeserializationContext $context)
+    public function deserialize(DOMNode $node, DeserializationContext $context)
     {
     }
 }

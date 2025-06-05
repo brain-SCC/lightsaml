@@ -2,7 +2,9 @@
 
 namespace LightSaml\Model\Protocol;
 
+use DOMNode;
 use LightSaml\Model\AbstractSamlModel;
+use LightSaml\Model\Assertion\AuthnContext;
 use LightSaml\Model\Context\DeserializationContext;
 use LightSaml\Model\Context\SerializationContext;
 use LightSaml\SamlConstants;
@@ -27,7 +29,7 @@ class RequestedAuthnContext extends AbstractSamlModel
     /**
      * @param string|null $authnContextClassRef
      *
-     * @return AuthnContext
+     * @return RequestedAuthnContext
      */
     public function setAuthnContextClassRef($authnContextClassRef)
     {
@@ -47,7 +49,7 @@ class RequestedAuthnContext extends AbstractSamlModel
     /**
      * @param string|null $authnContextDeclRef
      *
-     * @return AuthnContext
+     * @return RequestedAuthnContext
      */
     public function setAuthnContextDeclRef($authnContextDeclRef)
     {
@@ -67,7 +69,7 @@ class RequestedAuthnContext extends AbstractSamlModel
     /**
      * @param string|null $comparison
      *
-     * @return AuthnRequest
+     * @return RequestedAuthnContext
      */
     public function setComparison($comparison)
     {
@@ -87,7 +89,7 @@ class RequestedAuthnContext extends AbstractSamlModel
     /**
      * @return void
      */
-    public function serialize(\DOMNode $parent, SerializationContext $context)
+    public function serialize(DOMNode $parent, SerializationContext $context)
     {
         $result = $this->createElement('RequestedAuthnContext', SamlConstants::NS_PROTOCOL, $parent, $context);
 
@@ -101,7 +103,7 @@ class RequestedAuthnContext extends AbstractSamlModel
         );
     }
 
-    public function deserialize(\DOMNode $node, DeserializationContext $context)
+    public function deserialize(DOMNode $node, DeserializationContext $context)
     {
         $this->checkXmlNodeName($node, 'RequestedAuthnContext', SamlConstants::NS_PROTOCOL);
 
