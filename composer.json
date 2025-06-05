@@ -28,7 +28,7 @@
     },
     "require": {
         "php": "^8.1",
-        "brainscc/xmlseclibs": "~3.2.0",
+        "brainscc/xmlseclibs": "~3.2.1",
         "symfony/http-foundation": "^6.0|^7.0",
         "psr/event-dispatcher": "^1.0",
         "litesaml/schemas": "^3.0",
